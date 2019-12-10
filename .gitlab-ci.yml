@@ -11,7 +11,7 @@
     EOF
 
 .configiure_ssh_keys: &configiure_ssh_keys |
-    export DOMAIN=$(echo ${PROJECT_URL} | cut -d/ -f3)
+    export DOMAIN=$(echo ${PROJECT_URL} | cut -d\@ -f2 | cut -d\: -f1)
     umask 077
     mkdir -p ~/.ssh
     echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
@@ -40,15 +40,15 @@ run unit tests:
 
         # - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
         # - export PROJECT_URL="https://github.com/chuck/"
+        #
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-        - export PROJECT_URL=${CI_PROJECT_URL}
+        - export PROJECT_URL="git@gitlab.mothership:chuck/cicd-test.git"
         - *configiure_ssh_keys
 
-        - echo "${CI_PUSH_URL}"
-        - git config user.name "${GITLAB_USER_LOGIN}"
-        - git config user.email "${GITLAB_USER_EMAIL}"
+        - git config user.name  ${GITLAB_USER_LOGIN}
+        - git config user.email ${GITLAB_USER_EMAIL}
         - git remote rm origin
-        - git remote add origin git@gitlab.mothership:chuck/cicd-test.git
+        - git remote add origin ${PROJECT_URL}
 
         - git checkout master
         # - git pull origin master
