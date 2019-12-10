@@ -1,6 +1,6 @@
 .install_common_tools: &install_common_tools |
     apt-get update -yqq
-    apt-get -qy install ssh > /dev/null
+    apt-get -qy install ssh git > /dev/null
 
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
@@ -40,6 +40,7 @@ run unit tests:
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
         - export PROJECT_URL=${CI_PROJECT_URL}
         - *configiure_ssh_keys
+        - git config user.name "${GITLAB_USER_LOGIN}"
         - touch VERSION.txt
         - git commit -am 'Test [skip ci]'
         - git push
