@@ -1,0 +1,18 @@
+stages:
+    - test
+    - package
+    - deploy
+
+ .create_veracode_credentials: &create_veracode_credentials |
+    echo '>>>>>>>>>>>>>>>>>>'
+    echo $TEST
+
+
+run unit tests:
+    stage: test
+    tags:
+        - python
+
+    script:
+        - export TEST='THIS IS A TEST'
+        - *create_veracode_credentials
