@@ -15,7 +15,7 @@
     "git@${GIT_HOST}:${GIT_USER_NAME}/${CI_PROJECT_NAME}.git"
     export DOMAIN=$(echo ${GIT_PROJECT_URL} | cut -d\@ -f2 | cut -d\: -f1)
     umask 077
-    mkdir ~/.ssh
+    mkdir -p ~/.ssh
     echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
     ssh-keyscan -H $DOMAIN > ~/.ssh/known_hosts
     eval $(ssh-agent -s)
@@ -51,7 +51,7 @@ run unit tests:
         - *configiure_ssh_keys
 
         - git checkout master
-        - echo 0.0.2 > VERSION.txt
+        - echo 0.0.3 > VERSION.txt
         - git commit -am 'Test [skip ci]'
         - git push origin master
 
