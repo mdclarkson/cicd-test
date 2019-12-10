@@ -26,7 +26,36 @@
     git remote rm origin
     git remote add origin ${GIT_PROJECT_URL}
 
+.increment_semantic_version: &increment_semantic_version |
+    if [ ! -f VERSION.txt ]; then
+        echo 0.1.-1 > VERSION.txt
+    fi
 
+    VERSION=$(cat VERSION.txt)
+    MAJOR=$(echo $VERSION | cut -d\. -f1)
+    MINOR=$(echo $VERSION | cut -d\. -f2)
+    PATCH=$(echo $VERSION | cut -d\. -f3)
+
+    COMMIT_TYPE=$(git log -1 --pretty=format:%B | cut -d\: -f1)
+    COMMIT_TYPE=$1
+    case $COMMIT_TYPE in
+        PATCH) PATCH=$((PATCH + 1)) ;;
+        MINOR) MINOR=$((MINOR + 1)) ; PATCH=0 ;;
+        MAJOR) MAJOR=$((MAJOR + 1)) ; PATCH=0 ; MINOR=0 ;;
+    esac
+
+    VERSION=${MAJOR}.${MINOR}.${PATCH}
+
+    INIT_FILE=$(find . -maxdepth 2 -name '__init__.py')
+    if grep -q "__version__" $INIT_FILE; then
+        sed -ri "s/([0-9]+\.[0-9]+\.[0-9])/${VERSION}/" $INIT_FILE
+    else
+        echo "__version__ = ${VERSION}" >> $INIT_FILE
+    fi
+
+    echo $VERSION | tee VERSION.txt
+
+ 
 variables:
     GIT_STRATEGY: clone
 
@@ -51,7 +80,7 @@ run unit tests:
         - *configiure_git_repo
 
         - git checkout master
-        - echo 0.0.5 > VERSION.txt
+        - *increment_semantic_version
         - git commit -am 'Test [skip ci]'
         - git push origin master
 
