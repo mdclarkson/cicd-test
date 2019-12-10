@@ -16,10 +16,11 @@ stages:
     EOF
 
 .configiure_ssh_keys: &configiure_ssh_keys |
+    DOMAIN=$(echo ${PROJECT_URL} | cut -d/ -f3)
     umask 077
     mkdir -p ~/.ssh
     echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-    ssh-keyscan -H github.com > ~/.ssh/known_hosts
+    ssh-keyscan -H $DOMAIN > ~/.ssh/known_hosts
     eval $(ssh-agent -s)
     ssh-add ~/.ssh/id_rsa
     # ssh -T git@github.com
