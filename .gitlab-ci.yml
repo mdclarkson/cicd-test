@@ -56,3 +56,4 @@ run unit tests:
         - echo 0.0.1 > VERSION.txt
         - git commit -am 'Test [skip ci]'
         - git push origin master
+
