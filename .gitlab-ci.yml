@@ -14,7 +14,7 @@ stages:
         # \[DEFAULT\]
         VERACODE_API_ID = ${VERACODE_API_ID}
         VERACODE_API_SECRET = ${VERACODE_API_SECRET}
-        EOF
+    'EOF'
     - cat ~/.veracode/credentials
 
 run unit tests:
