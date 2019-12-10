@@ -15,12 +15,11 @@
     "git@${GIT_HOST}:${GIT_USER_NAME}/${CI_PROJECT_NAME}.git"
     export DOMAIN=$(echo ${GIT_PROJECT_URL} | cut -d\@ -f2 | cut -d\: -f1)
     umask 077
-    mkdir -p ~/.ssh
+    mkdir ~/.ssh
     echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
     ssh-keyscan -H $DOMAIN > ~/.ssh/known_hosts
     eval $(ssh-agent -s)
     ssh-add ~/.ssh/id_rsa
-    # ssh -T git@$DOMAIN
 
     git config user.name  ${GIT_USER_NAME}
     git config user.email ${GIT_USER_EMAIL}
@@ -42,13 +41,13 @@ run unit tests:
         - test_runner
 
     script:
-        - *install_common_tools
-        - *create_veracode_credentials
-
         - export GIT_USER_NAME="chuck"
         - export GIT_USER_EMAIL="chuck@gitlab.mothership"
         - export GIT_HOST="gitlab.mothership"
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
+
+        - *install_common_tools
+        - *create_veracode_credentials
         - *configiure_ssh_keys
 
         - git checkout master
@@ -56,3 +55,7 @@ run unit tests:
         - git commit -am 'Test [skip ci]'
         - git push origin master
 
+        - export GIT_USER_NAME="chuckorde"
+        - export GIT_USER_EMAIL="chuckorde@gmail.com"
+        - export GIT_HOST="github.com"
+        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
