@@ -80,8 +80,8 @@ run unit tests:
         - *configiure_git_repo
 
         - git checkout master
+        - cat VERSION.txt
         - *increment_semantic_version
-        - ls -la
         - cat VERSION.txt
         - git add .
         - git commit -m 'Test [skip ci]'
