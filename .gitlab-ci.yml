@@ -59,3 +59,5 @@ run unit tests:
         - export GIT_USER_EMAIL="chuckorde@gmail.com"
         - export GIT_HOST="github.com"
         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        - *configiure_ssh_keys
+        - git push
