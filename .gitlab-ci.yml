@@ -22,7 +22,7 @@
 
 
 variables:
-  GIT_STRATEGY: clone
+    GIT_STRATEGY: clone
 
 stages:
     - test
@@ -50,6 +50,7 @@ run unit tests:
         - git remote set-url origin "${CI_PUSH_URL}"
 
         - git checkout master
+        - git pull --all
         - touch VERSION.txt
         - git add VERSION.txt
         - git commit -am 'Test [skip ci]'
