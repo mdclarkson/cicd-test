@@ -4,8 +4,9 @@ stages:
     - deploy
 
 .install_common_tools: &install_common_tools |
-    DEBIAN_FRONTEND=noninteractive apt-get update -yqq
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq ssh
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update -yqq
+    #apt-get install -yq ssh
 
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
