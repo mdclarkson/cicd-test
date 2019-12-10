@@ -50,7 +50,7 @@ run unit tests:
         - git remote set-url origin "${CI_PUSH_URL}"
 
         - git checkout master
-        - git pull --all
+        - git pull origin master
         - touch VERSION.txt
         - git add VERSION.txt
         - git commit -am 'Test [skip ci]'
