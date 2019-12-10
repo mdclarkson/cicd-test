@@ -10,7 +10,7 @@
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
 
-.configiure_ssh_keys: &configiure_ssh_keys |
+.configiure_git_repo: &configiure_git_repo |
     export GIT_PROJECT_URL=\
     "git@${GIT_HOST}:${GIT_USER_NAME}/${CI_PROJECT_NAME}.git"
     export DOMAIN=$(echo ${GIT_PROJECT_URL} | cut -d\@ -f2 | cut -d\: -f1)
@@ -48,10 +48,10 @@ run unit tests:
 
         - *install_common_tools
         - *create_veracode_credentials
-        - *configiure_ssh_keys
+        - *configiure_git_repo
 
         - git checkout master
-        - echo 0.0.5 > VERSION.txt
+        - echo 0.0.6 > VERSION.txt
         - git commit -am 'Test [skip ci]'
         - git push origin master
 
@@ -59,9 +59,7 @@ run unit tests:
         - export GIT_USER_EMAIL="chuckorde@gmail.com"
         - export GIT_HOST="github.com"
         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-        - *configiure_ssh_keys
-        # - git add --all
-        # - git commit -m 'Test [skip ci]'
+        - *configiure_git_repo
         - git push -u origin master
 
 
