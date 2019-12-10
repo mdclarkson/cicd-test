@@ -25,7 +25,6 @@ stages:
 
     cat ~/.veracode/credentials
 
-
 run unit tests:
     stage: test
     tags:
