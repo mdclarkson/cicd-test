@@ -81,7 +81,7 @@ run unit tests:
 
         - git checkout master
         - *increment_semantic_version
-        - git add --all
+        - git add .
         - git commit -m 'Test [skip ci]'
         - git push origin master
 
