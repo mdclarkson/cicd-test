@@ -11,7 +11,7 @@ stages:
 run unit tests:
     stage: test
     tags:
-        - python
+        - test_runner
 
     script:
         - export TEST='THIS IS A TEST'
