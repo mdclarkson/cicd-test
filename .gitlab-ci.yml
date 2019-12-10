@@ -17,12 +17,14 @@ stages:
     #     VERACODE_API_SECRET = ${VERACODE_API_SECRET}\
     #     >> ~/.veracode/credentials
     # - cat ~/.veracode/credentials
-    cat > test-multi-lines-text <<-EOF
-        line1
-        line 2
+    cat > ~/.veracode/credentials <<-EOF
+    [DEFAULT]
+    VERACODE_API_ID = ${VERACODE_API_ID}
+    VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
+
     ls -la
-    cat test-multi-lines-text
+    cat ~/.veracode/credentials
 
 
 run unit tests:
