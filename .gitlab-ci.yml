@@ -40,7 +40,10 @@ run unit tests:
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
         - export PROJECT_URL=${CI_PROJECT_URL}
         - *configiure_ssh_keys
+
         - git config user.name "${GITLAB_USER_LOGIN}"
+        - git config user.email "${GITLAB_USER_EMAIL}"
+
         - touch VERSION.txt
         - git commit -am 'Test [skip ci]'
         - git push
