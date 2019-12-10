@@ -3,7 +3,7 @@ stages:
     - package
     - deploy
 
- .create_veracode_credentials: &create_veracode_credentials |
+.create_veracode_credentials: &create_veracode_credentials |
     echo '>>>>>>>>>>>>>>>>>>'
     echo $TEST
 
