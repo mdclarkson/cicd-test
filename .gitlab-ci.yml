@@ -50,4 +50,5 @@ run unit tests:
         - touch VERSION.txt
         - git add VERSION.txt
         - git commit -am 'Test [skip ci]'
+        - git push --set-upstream origin master
         - git push
