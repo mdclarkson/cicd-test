@@ -44,6 +44,8 @@ run unit tests:
         - git config user.name "${GITLAB_USER_LOGIN}"
         - git config user.email "${GITLAB_USER_EMAIL}"
 
+        - git checkout master
         - touch VERSION.txt
+        - git add VERSION.txt
         - git commit -am 'Test [skip ci]'
         - git push
