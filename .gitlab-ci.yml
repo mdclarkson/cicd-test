@@ -21,7 +21,7 @@ stages:
         cat > test-multi-lines-text << EOF
         line1
         line 2
-        EOF
+        `EOF'
     - cat test-multi-lines-text
 
 
