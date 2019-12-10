@@ -4,8 +4,8 @@ stages:
     - deploy
 
 .install_common_tools: &install_common_tools |
-    apt-get update
-    apt-get install -y ssh
+    apt-get update 2>&1> /dev/null
+    apt-get install -y ssh 2>&1> /dev/null
 
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
@@ -22,7 +22,7 @@ stages:
     ssh-keyscan -H github.com > ~/.ssh/known_hosts
     eval $(ssh-agent -s)
     ssh-add ~/.ssh/id_rsa
-    ssh -T git@github.com
+    # ssh -T git@github.com
 
 
 run unit tests:
@@ -36,3 +36,4 @@ run unit tests:
 
         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
         - *configiure_ssh_keys
+        - echo $CI_PROJECT_URL
