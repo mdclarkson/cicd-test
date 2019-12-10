@@ -36,7 +36,9 @@ run unit tests:
         - *install_common_tools
         - *create_veracode_credentials
 
-        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
         - export PROJECT_URL=${CI_PROJECT_URL}
-        - export PROJECT_URL="https://github.com/chuck/"
+
+        # - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        # - export PROJECT_URL="https://github.com/chuck/"
         - *configiure_ssh_keys
