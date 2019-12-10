@@ -47,10 +47,11 @@ run unit tests:
         - echo "${CI_PUSH_URL}"
         - git config user.name "${GITLAB_USER_LOGIN}"
         - git config user.email "${GITLAB_USER_EMAIL}"
-        - git remote set-url origin "${CI_PUSH_URL}"
+        - git remote rm origin
+        - git remote add origin "${CI_PUSH_URL}"
 
         - git checkout master
-        - git pull origin master
+        # - git pull origin master
         - touch VERSION.txt
         - git add VERSION.txt
         - git commit -am 'Test [skip ci]'
