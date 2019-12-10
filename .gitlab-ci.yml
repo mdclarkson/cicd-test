@@ -27,5 +27,6 @@ run unit tests:
         - test_runner
 
     script:
-        - export TEST='THIS IS A TEST'
         - *create_veracode_credentials
+        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        - *configiure_ssh_keys
