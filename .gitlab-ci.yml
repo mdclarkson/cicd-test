@@ -21,6 +21,7 @@ stages:
         line1
         line 2
     EOF
+    ls -la
     cat test-multi-lines-text
 
 
