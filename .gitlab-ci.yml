@@ -21,6 +21,9 @@
     # ssh -T git@$DOMAIN
 
 
+variables:
+  GIT_STRATEGY: clone
+
 stages:
     - test
     - package
@@ -47,7 +50,6 @@ run unit tests:
         - git remote set-url origin "${CI_PUSH_URL}"
 
         - git checkout master
-        - git pull 
         - touch VERSION.txt
         - git add VERSION.txt
         - git commit -am 'Test [skip ci]'
