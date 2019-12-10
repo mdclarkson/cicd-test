@@ -4,12 +4,8 @@ stages:
     - deploy
 
 .install_common_tools: &install_common_tools |
-    export DEBIAN_FRONTEND=noninteractive
     apt-get update -yqq
-    apt-get -qy \
-            -o "Dpkg::Options::=--force-confdef" \
-            -o "Dpkg::Options::=--force-confold" \
-    install ssh
+    apt-get -qy install ssh > /dev/null
 
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
