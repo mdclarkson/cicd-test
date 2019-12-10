@@ -5,7 +5,7 @@ stages:
 
 .install_common_tools: &install_common_tools |
     apt-get update -yqq
-    apt-get install -yq ssh
+    apt-get install -yqq ssh
 
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
@@ -20,7 +20,7 @@ stages:
     echo $DOMAIN
     umask 077
     mkdir -p ~/.ssh
-    echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+    echo ${SSH_PRIVATE_KEY} > ~/.ssh/id_rsa
     ssh-keyscan -H $DOMAIN > ~/.ssh/known_hosts
     eval $(ssh-agent -s)
     ssh-add ~/.ssh/id_rsa
@@ -37,5 +37,5 @@ run unit tests:
         - *create_veracode_credentials
 
         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        - export PROJECT_URL=${CI_PROJECT_URL}
         - *configiure_ssh_keys
-        - echo $CI_PROJECT_URL
