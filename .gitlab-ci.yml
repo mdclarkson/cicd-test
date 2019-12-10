@@ -17,7 +17,7 @@ stages:
     #     VERACODE_API_SECRET = ${VERACODE_API_SECRET}\
     #     >> ~/.veracode/credentials
     # - cat ~/.veracode/credentials
-    cat <<-EOF> ~/.veracode/credentials
+    cat <<'EOF'> ~/.veracode/credentials
     [DEFAULT]
     VERACODE_API_ID = ${VERACODE_API_ID}
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
