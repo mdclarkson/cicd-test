@@ -3,30 +3,6 @@ stages:
     - package
     - deploy
 
-.install_common_tools: &install_common_tools |
-    apt-get update -yqq
-    apt-get -qy install ssh > /dev/null
-
-.create_veracode_credentials: &create_veracode_credentials |
-    mkdir ~/.veracode
-    cat <<EOF> ~/.veracode/credentials
-    [DEFAULT]
-    VERACODE_API_ID = ${VERACODE_API_ID}
-    VERACODE_API_SECRET = ${VERACODE_API_SECRET}
-    EOF
-
-.configiure_ssh_keys: &configiure_ssh_keys |
-    export DOMAIN=$(echo ${PROJECT_URL} | cut -d/ -f3)
-    echo $DOMAIN
-    umask 077
-    mkdir -p ~/.ssh
-    echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-    ssh-keyscan -H $DOMAIN > ~/.ssh/known_hosts
-    eval $(ssh-agent -s)
-    ssh-add ~/.ssh/id_rsa
-    ssh -T git@$DOMAIN
-
-
 run unit tests:
     stage: test
     tags:
@@ -42,3 +18,25 @@ run unit tests:
         # - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
         # - export PROJECT_URL="https://github.com/chuck/"
         - *configiure_ssh_keys
+         
+
+.install_common_tools: &install_common_tools |
+    apt-get update -yqq
+    apt-get -qy install ssh > /dev/null
+
+.create_veracode_credentials: &create_veracode_credentials |
+    mkdir ~/.veracode
+    cat <<EOF> ~/.veracode/credentials
+    [DEFAULT]
+    VERACODE_API_ID = ${VERACODE_API_ID}
+    VERACODE_API_SECRET = ${VERACODE_API_SECRET}
+    EOF
+
+.configiure_ssh_keys: &configiure_ssh_keys |
+    export DOMAIN=$(echo ${PROJECT_URL} | cut -d/ -f3)
+    umask 077
+    mkdir -p ~/.ssh
+    echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+    ssh-keyscan -H $DOMAIN > ~/.ssh/known_hosts
+    eval $(ssh-agent -s)
+    # ssh-add ~/.ssh/id_rsa
