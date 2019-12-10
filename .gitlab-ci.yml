@@ -17,7 +17,7 @@ stages:
     #     VERACODE_API_SECRET = ${VERACODE_API_SECRET}\
     #     >> ~/.veracode/credentials
     # - cat ~/.veracode/credentials
-    - cat > test-multi-lines-text <<-EOF
+    - cat > test-multi-lines-text <<'EOF'
         line1
         line 2
         EOF
