@@ -10,13 +10,20 @@ stages:
     #         >> ~/.veracode/credentials
     # echo "VERACODE_API_SECRET = ${VERACODE_API_SECRET}" 
     #         >> ~/.veracode/credentials
+    # - |
+    #   echo 
+    #     \[DEFAULT\]\
+    #     VERACODE_API_ID = ${VERACODE_API_ID}\
+    #     VERACODE_API_SECRET = ${VERACODE_API_SECRET}\
+    #     >> ~/.veracode/credentials
+    # - cat ~/.veracode/credentials
     - |
-      echo 
-        \[DEFAULT\]\
-        VERACODE_API_ID = ${VERACODE_API_ID}\
-        VERACODE_API_SECRET = ${VERACODE_API_SECRET}\
-        >> ~/.veracode/credentials
-    - cat ~/.veracode/credentials
+        cat > test-multi-lines-text << EOF
+        line1
+        line 2
+        EOF
+    - cat test-multi-lines-text
+
 
 run unit tests:
     stage: test
