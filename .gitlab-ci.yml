@@ -16,7 +16,7 @@ stages:
     EOF
 
 .configiure_ssh_keys: &configiure_ssh_keys |
-    umask 400
+    umask 077
     mkdir -p ~/.ssh
     echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
     ssh-keyscan -H github.com > ~/.ssh/known_hosts
