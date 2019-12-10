@@ -41,8 +41,10 @@ run unit tests:
         - export PROJECT_URL=${CI_PROJECT_URL}
         - *configiure_ssh_keys
 
+        - echo "${CI_PUSH_URL}"
         - git config user.name "${GITLAB_USER_LOGIN}"
         - git config user.email "${GITLAB_USER_EMAIL}"
+        - git remote set-url origin "${CI_PUSH_URL}"
 
         - git checkout master
         - touch VERSION.txt
