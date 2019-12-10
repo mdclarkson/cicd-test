@@ -3,6 +3,10 @@ stages:
     - package
     - deploy
 
+.install_common_tools: &install_common_tools |
+    apt-get update
+    apt-get install -y ssh
+
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
     cat <<EOF> ~/.veracode/credentials
@@ -27,6 +31,8 @@ run unit tests:
         - test_runner
 
     script:
+        - *install_common_tools
         - *create_veracode_credentials
+
         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
         - *configiure_ssh_keys
