@@ -4,9 +4,18 @@ stages:
     - deploy
 
 .create_veracode_credentials: &create_veracode_credentials |
-    echo '>>>>>>>>>>>>>>>>>>'
-    echo $TEST
-
+    mkdir ~/.veracode
+    # echo "[DEFAULT]" > ~/.veracode/credentials
+    # echo "VERACODE_API_ID = ${VERACODE_API_ID}" 
+    #         >> ~/.veracode/credentials
+    # echo "VERACODE_API_SECRET = ${VERACODE_API_SECRET}" 
+    #         >> ~/.veracode/credentials
+    - cat < EOF > ~/.veracode/credentials
+    [DEFAULT]
+    VERACODE_API_ID = ${VERACODE_API_ID}
+    VERACODE_API_SECRET = ${VERACODE_API_SECRET}
+    EOF
+    - cat ~/.veracode/credentials
 
 run unit tests:
     stage: test
