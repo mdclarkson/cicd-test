@@ -6,8 +6,9 @@ stages:
 .install_common_tools: &install_common_tools |
     export DEBIAN_FRONTEND=noninteractive
     apt-get update -yqq
-    -get apt-get -qyo "Dpkg::Options::=--force-confdef"\
-                 -o   "Dpkg::Options::=--force-confold"\
+    apt-get apt-get -qy
+                    -o "Dpkg::Options::=--force-confdef"\
+                    -o "Dpkg::Options::=--force-confold"\
         ssh
 
 .create_veracode_credentials: &create_veracode_credentials |
