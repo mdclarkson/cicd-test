@@ -22,8 +22,8 @@ stages:
     VERACODE_API_ID = ${VERACODE_API_ID}
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
-
-    source <(~/.veracode/credentials)
+    
+    ~/.veracode/credentials --list
     cat ~/.veracode/credentials
 
 
