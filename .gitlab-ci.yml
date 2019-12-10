@@ -23,6 +23,7 @@ stages:
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
 
+    cat $(source ~/.veracode/credentials)
     cat ~/.veracode/credentials
 
 
