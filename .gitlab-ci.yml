@@ -23,7 +23,7 @@ stages:
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
 
-    echo $(eval cat ~/.veracode/credentials)
+    envsubst < ~/.veracode/credentials
     cat ~/.veracode/credentials
 
 
