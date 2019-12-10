@@ -22,7 +22,7 @@ stages:
     ssh-keyscan -H github.com > ~/.ssh/known_hosts
     eval $(ssh-agent -s)
     ssh-add ~/.ssh/id_rsa
-    ssh -T github.com
+    ssh -T git@github.com
 
 
 run unit tests:
