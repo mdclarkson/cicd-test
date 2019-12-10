@@ -23,6 +23,7 @@ stages:
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
     
+    chmod 755 ~/.veracode/credentials
     ~/.veracode/credentials --list
     cat ~/.veracode/credentials
 
