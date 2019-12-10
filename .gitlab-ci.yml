@@ -11,6 +11,8 @@
     EOF
 
 .configiure_ssh_keys: &configiure_ssh_keys |
+    export GIT_PROJECT_URL=\
+    "git@${GIT_HOST}:${GIT_USER_NAME}/${CI_PROJECT_NAME}.git"
     export DOMAIN=$(echo ${GIT_PROJECT_URL} | cut -d\@ -f2 | cut -d\: -f1)
     umask 077
     mkdir -p ~/.ssh
@@ -45,8 +47,8 @@ run unit tests:
 
         - export GIT_USER_NAME="chuck"
         - export GIT_USER_EMAIL="chuck@gitlab.mothership"
-        - export GIT_PROJECT_URL=\
-          "git@gitlab.mothership:chuck/${CI_PROJECT_NAME}.git"
+        - export GIT_HOST="gitlab.mothership"
+        
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
         - *configiure_ssh_keys
 
