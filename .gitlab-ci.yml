@@ -4,8 +4,8 @@ stages:
     - deploy
 
 .install_common_tools: &install_common_tools |
-    apt-get update -yqq
-    apt-get install -yqq ssh
+    apt-get -qq update -y
+    apt-get -q install -y ssh
 
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
