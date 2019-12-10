@@ -9,7 +9,7 @@ stages:
     apt-get apt-get -qy
                     -o "Dpkg::Options::=--force-confdef"\
                     -o "Dpkg::Options::=--force-confold"\
-        ssh
+        install ssh
 
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
