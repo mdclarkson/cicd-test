@@ -11,7 +11,7 @@ stages:
     # echo "VERACODE_API_SECRET = ${VERACODE_API_SECRET}" 
     #         >> ~/.veracode/credentials
     - cat << \EOF > ~/.veracode/credentials
-    [DEFAULT]
+    \[DEFAULT\]
     VERACODE_API_ID = ${VERACODE_API_ID}
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
