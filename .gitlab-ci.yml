@@ -20,6 +20,15 @@
     ssh-add ~/.ssh/id_rsa
     # ssh -T git@$DOMAIN
 
+    echo $GIT_USER_EMAIL
+    echo $GIT_USER_NAME
+    echo $GIT_PROJECT_URL
+
+    git config user.name  ${GIT_USER_NAME}
+    git config user.email ${GIT_USER_EMAIL}
+    git remote rm origin
+    git remote add origin ${GIT_PROJECT_URL}
+
 
 
 variables:
@@ -39,17 +48,14 @@ run unit tests:
         - *install_common_tools
         - *create_veracode_credentials
 
+        # - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        # - export PROJECT_URL="https://github.com/chuck/"
+        #
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
         - export GIT_USER_NAME="chuck"
         - export GIT_USER_EMAIL="chuck@gitlab.mothership"
         - export GIT_PROJECT_URL="git@gitlab.mothership:chuck/cicd-test.git"
         - *configiure_ssh_keys
-          
-        - git config user.name  ${GIT_USER_LOGIN}
-        - git config user.email ${GIT_USER_EMAIL}
-        - git remote rm origin
-        - git remote add origin ${GIT_PROJECT_URL}
-
 
         - git checkout master
         - echo 0.0.1 > VERSION.txt
