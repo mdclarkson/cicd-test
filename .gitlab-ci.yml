@@ -20,7 +20,7 @@ stages:
     echo $DOMAIN
     umask 077
     mkdir -p ~/.ssh
-    echo ${SSH_PRIVATE_KEY} > ~/.ssh/id_rsa
+    echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
     ssh-keyscan -H $DOMAIN > ~/.ssh/known_hosts
     eval $(ssh-agent -s)
     ssh-add ~/.ssh/id_rsa
@@ -38,4 +38,5 @@ run unit tests:
 
         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
         - export PROJECT_URL=${CI_PROJECT_URL}
+        - export PROJECT_URL="https://github.com/chuck/"
         - *configiure_ssh_keys
