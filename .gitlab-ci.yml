@@ -51,7 +51,7 @@ run unit tests:
         - *configiure_ssh_keys
 
         - git checkout master
-        - echo 0.0.4 > VERSION.txt
+        - echo 0.0.5 > VERSION.txt
         - git commit -am 'Test [skip ci]'
         - git push origin master
 
