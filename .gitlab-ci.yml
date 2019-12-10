@@ -1,25 +1,3 @@
-stages:
-    - test
-    - package
-    - deploy
-
-run unit tests:
-    stage: test
-    tags:
-        - test_runner
-
-    script:
-        - *install_common_tools
-        - *create_veracode_credentials
-
-        - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-        - export PROJECT_URL=${CI_PROJECT_URL}
-
-        # - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-        # - export PROJECT_URL="https://github.com/chuck/"
-        - *configiure_ssh_keys
-         
-
 .install_common_tools: &install_common_tools |
     apt-get update -yqq
     apt-get -qy install ssh > /dev/null
@@ -39,5 +17,29 @@ run unit tests:
     echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
     ssh-keyscan -H $DOMAIN > ~/.ssh/known_hosts
     eval $(ssh-agent -s)
-    # ssh-add ~/.ssh/id_rsa
-    #
+    ssh-add ~/.ssh/id_rsa
+    # ssh -T git@$DOMAIN
+
+
+stages:
+    - test
+    - package
+    - deploy
+
+run unit tests:
+    stage: test
+    tags:
+        - test_runner
+
+    script:
+        - *install_common_tools
+        - *create_veracode_credentials
+
+        # - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        # - export PROJECT_URL="https://github.com/chuck/"
+        - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
+        - export PROJECT_URL=${CI_PROJECT_URL}
+        - *configiure_ssh_keys
+        - touch VERSION.txt
+        - git commit -am 'Test [skip ci]'
+        - git push
