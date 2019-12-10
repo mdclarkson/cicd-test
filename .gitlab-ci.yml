@@ -5,25 +5,21 @@ stages:
 
 .create_veracode_credentials: &create_veracode_credentials |
     mkdir ~/.veracode
-    # echo "[DEFAULT]" > ~/.veracode/credentials
-    # echo "VERACODE_API_ID = ${VERACODE_API_ID}" 
-    #         >> ~/.veracode/credentials
-    # echo "VERACODE_API_SECRET = ${VERACODE_API_SECRET}" 
-    #         >> ~/.veracode/credentials
-    # - |
-    #   echo 
-    #     \[DEFAULT\]\
-    #     VERACODE_API_ID = ${VERACODE_API_ID}\
-    #     VERACODE_API_SECRET = ${VERACODE_API_SECRET}\
-    #     >> ~/.veracode/credentials
-    # - cat ~/.veracode/credentials
     cat <<EOF> ~/.veracode/credentials
     [DEFAULT]
     VERACODE_API_ID = ${VERACODE_API_ID}
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
 
-    cat ~/.veracode/credentials
+.configiure_ssh_keys: &configiure_ssh_keys |
+    umask 400
+    mkdir -p ~/.ssh
+    echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+    ssh-keyscan -H github.com > ~/.ssh/known_hosts
+    eval $(ssh-agent -s)
+    ssh-add ~/.ssh/id_rsa
+    ssh -T github.com
+
 
 run unit tests:
     stage: test
