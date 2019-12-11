@@ -54,7 +54,7 @@
 
     if grep -q "__version__" $INIT_FILE; then
         sed -ri "s/([0-9]+\.[0-9]+\.[0-9])/${VERSION}/" $INIT_FILE
-    else echo "__version__ = ${VERSION}" >> $INIT_FILE
+    else echo "__version__ = \'${VERSION}\'" >> $INIT_FILE
     fi
 
 .create_github_release: &create_github_release |
@@ -81,7 +81,7 @@ stages:
 package gitlab repo:
     stage: package
     tags:
-       - test_runner
+        - test_runner
 
     script:
         - *install_common_tools
@@ -104,7 +104,7 @@ package gitlab repo:
 publish github release:
     stage: package
     tags:
-       - test_runner
+        - test_runner
 
     script:
         - *install_common_tools
