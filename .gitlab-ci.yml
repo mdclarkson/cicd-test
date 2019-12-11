@@ -26,12 +26,18 @@
     git remote rm origin
     git remote add origin ${GIT_PROJECT_URL}
 
-.increment_semantic_version: &increment_semantic_version |
-    set -x
+.set_version_env_var: &set_version_env_var |
+    # not very dry, look into manchor merge
     INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
     [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
+    export VERSION=$(awk '/([0-9]+\.[0-9]+\.[0-9])/ {print $3}' $INIT_FILE)
 
-    VERSION=$(awk '/([0-9]+\.[0-9]+\.[0-9])/ {print $3}' $INIT_FILE)
+.increment_semantic_version: &increment_semantic_version |
+    # INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
+    # [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
+    # VERSION=$(awk '/([0-9]+\.[0-9]+\.[0-9])/ {print $3}' $INIT_FILE)
+   <<: *set_version_env_var
+
     MAJOR=$(echo $VERSION | cut -d\. -f1)
     MINOR=$(echo $VERSION | cut -d\. -f2)
     PATCH=$(echo $VERSION | cut -d\. -f3)
@@ -49,7 +55,19 @@
         sed -ri "s/([0-9]+\.[0-9]+\.[0-9])/${VERSION}/" $INIT_FILE
     else echo "__version__ = ${VERSION}" >> $INIT_FILE
     fi
-    set +x
+
+.create_github_release: &create_github_release |
+   <<: *set_version_env_var
+   echo '<<<' $VERSION
+   # {
+   #      "tag_name": "vVERSION",
+   #      "target_commitish": "master",
+   #      "name": "vVERSION",
+   #      "body": "Release of version vVERSION",
+   #      "draft": false,
+   #      "prerelease": false
+   # }
+ 
  
 variables:
     GIT_STRATEGY: clone
@@ -82,6 +100,25 @@ package gitlab repo:
         - git push origin v${VERSION}
 
 
+publish github release:
+    stage: package
+    tags:
+       - test_runner
+
+    script:
+        - *install_common_tools
+
+        - export GIT_USER_NAME="chuckorde"
+        - export GIT_USER_EMAIL="chuckorde@gmail.com"
+        - export GIT_HOST="github.com"
+        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        - *configiure_git_repo
+
+        - git push -u origin master
+        - *create_github_release 
+        - echo '>>>' $VERSION
+    
+ 
 # run unit tests:
 #     stage: test
 #     tags:
