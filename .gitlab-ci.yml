@@ -26,11 +26,10 @@
     git remote rm origin
     git remote add origin ${GIT_PROJECT_URL}
 
-.set_version_env_var: &set_version_env_var |
-    # not very dry, look into manchor merge
-    INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
-    [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
-    export VERSION=$(awk '/([0-9]+\.[0-9]+\.[0-9])/ {print $3}' $INIT_FILE)
+.set_version_env_var: &set_version_env_var
+    - INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
+    - [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
+    - export VERSION=$(awk '/([0-9]+\.[0-9]+\.[0-9])/ {print $3}' $INIT_FILE)
 
 .increment_semantic_version: &increment_semantic_version |
     # INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
