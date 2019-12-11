@@ -27,6 +27,7 @@
     git remote add origin ${GIT_PROJECT_URL}
 
 .increment_semantic_version: &increment_semantic_version |
+    set -x
     [ -f version.txt ] || { echo 0.1.-1 > version.txt }
     VERSION=$(cat version.txt)
     MAJOR=$(echo $VERSION | cut -d\. -f1)
