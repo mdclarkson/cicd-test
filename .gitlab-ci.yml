@@ -35,16 +35,13 @@
 .increment_semantic_version: &increment_semantic_version |
     INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
     [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
-    VERSION=$(awk '/([0-9]+\.[0-9]+\.[0-9])/ {print $3}' $INIT_FILE)
+    VERSION=$(sed -rn 's/([0-9]+\.[0-9]+\.[0-9])/\1/p' $INIT_FILE)
     set -x
     # <<: *set_version_env_var
 
     MAJOR=$(echo $VERSION | cut -d\. -f1)
     MINOR=$(echo $VERSION | cut -d\. -f2)
     PATCH=$(echo $VERSION | cut -d\. -f3)
-
-    # echo $MAJOR $MONOR $PATCH
-    # added quotes to ver in init, now the redex is uncertian
 
     COMMIT_TYPE=$(git log -1 --pretty=format:%B | cut -d\: -f1)
     case $COMMIT_TYPE in
