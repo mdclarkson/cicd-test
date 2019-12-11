@@ -27,6 +27,7 @@
     git remote add origin ${GIT_PROJECT_URL}
 
 .increment_semantic_version: &increment_semantic_version |
+    set -x
     INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
     [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
 
@@ -49,7 +50,7 @@
         sed -ri "s/([0-9]+\.[0-9]+\.[0-9])/${VERSION}/" $INIT_FILE
     else echo "__version__ = ${VERSION}" >> $INIT_FILE
     fi
-
+    set +x
  
 variables:
     GIT_STRATEGY: clone
