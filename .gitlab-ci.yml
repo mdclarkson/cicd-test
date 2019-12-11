@@ -59,10 +59,10 @@
    echo '<<<' $VERSION
    cat <<EOF> data
    {
-        "tag_name": "vVERSION",
+        "tag_name": "v${VERSION}",
         "target_commitish": "master",
         "name": "vVERSION",
-        "body": "Release of version vVERSION",
+        "body": "Release of version v{VERSION}",
         "draft": false,
         "prerelease": false
    }
