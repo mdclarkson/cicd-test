@@ -43,6 +43,8 @@
     MINOR=$(echo $VERSION | cut -d\. -f2)
     PATCH=$(echo $VERSION | cut -d\. -f3)
 
+    echo $MAJOR $MONOR $PATCH
+
     COMMIT_TYPE=$(git log -1 --pretty=format:%B | cut -d\: -f1)
     case $COMMIT_TYPE in
         PATCH) PATCH=$((PATCH + 1)) ;;
