@@ -27,26 +27,24 @@
     git remote add origin ${GIT_PROJECT_URL}
 
 .increment_semantic_version: &increment_semantic_version |
-    set -x
-    # [ -f version.txt ] || { echo 0.1.-1 > version.txt }
-    VERSION=$(cat version.txt)
+    INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
+    [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
+
+    VERSION=$(awk '/([0-9]+\.[0-9]+\.[0-9])/ {print $3}' $INIT_FILE)
     MAJOR=$(echo $VERSION | cut -d\. -f1)
     MINOR=$(echo $VERSION | cut -d\. -f2)
     PATCH=$(echo $VERSION | cut -d\. -f3)
 
     COMMIT_TYPE=$(git log -1 --pretty=format:%B | cut -d\: -f1)
+    COMMIT_TYPE=$1
     case $COMMIT_TYPE in
         PATCH) PATCH=$((PATCH + 1)) ;;
         MINOR) MINOR=$((MINOR + 1)) ; PATCH=0 ;;
         MAJOR) MAJOR=$((MAJOR + 1)) ; PATCH=0 ; MINOR=0 ;;
         *) echo "Cannot increment version from commit"; exit 1 ;;
     esac
-
     export VERSION=${MAJOR}.${MINOR}.${PATCH}
-    echo $VERSION > version.txt
 
-    INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
-    [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
     if grep -q "__version__" $INIT_FILE; then
         sed -ri "s/([0-9]+\.[0-9]+\.[0-9])/${VERSION}/" $INIT_FILE
     else echo "__version__ = ${VERSION}" >> $INIT_FILE
