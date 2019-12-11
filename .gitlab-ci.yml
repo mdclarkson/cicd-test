@@ -57,7 +57,7 @@
     fi
 
 .create_github_release: &create_github_release |
-   <<: *set_version_env_var
+   # <<: *set_version_env_var
    echo '<<<' $VERSION
    # {
    #      "tag_name": "vVERSION",
