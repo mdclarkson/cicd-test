@@ -37,7 +37,6 @@
     PATCH=$(echo $VERSION | cut -d\. -f3)
 
     COMMIT_TYPE=$(git log -1 --pretty=format:%B | cut -d\: -f1)
-    COMMIT_TYPE=$1
     case $COMMIT_TYPE in
         PATCH) PATCH=$((PATCH + 1)) ;;
         MINOR) MINOR=$((MINOR + 1)) ; PATCH=0 ;;
