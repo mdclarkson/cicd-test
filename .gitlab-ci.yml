@@ -36,6 +36,7 @@
     INIT_FILE=$(find . -maxdepth 2 -name "__init__.py")
     [ -z $INIT_FILE ] && { echo "Can't find <module>.__init__.py" ; exit 1; }
     VERSION=$(sed -rn 's/.*([0-9]+\.[0-9]+\.[0-9]+)./\1/p' $INIT_FILE)
+    echo 'GET' $VERSION
 
     MAJOR=$(echo $VERSION | cut -d\. -f1)
     MINOR=$(echo $VERSION | cut -d\. -f2)
@@ -48,12 +49,14 @@
         MAJOR) MAJOR=$((MAJOR + 1)) ; PATCH=0 ; MINOR=0 ;;
         *) echo "Cannot increment version from commit"; exit 1 ;;
     esac
-    export VERSION=${MAJOR}.${MINOR}.${PATCH}
 
+    export VERSION=${MAJOR}.${MINOR}.${PATCH}
+    echo 'EXPORT' $VERSION
     if grep -q "__version__" $INIT_FILE; then
         sed -ri "s/([0-9]+\.[0-9]+\.[0-9])/${VERSION}/" $INIT_FILE
     else echo "__version__ = \'${VERSION}\'" >> $INIT_FILE
     fi
+    echo 'REPLACE' $VERSION
 
 .create_github_release: &create_github_release |
    echo '<<<' $VERSION
