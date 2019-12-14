@@ -32,7 +32,6 @@
 
 variables:
     GIT_STRATEGY: clone
-    RUNNER: test_runner
 
 stages:
     - test
@@ -43,7 +42,7 @@ Unit Test:
     stage: test
 
     tags:
-        - ${RUNNER}
+        - test_runner
 
     script: 
         - echo 'TESTS'
