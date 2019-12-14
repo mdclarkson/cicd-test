@@ -37,7 +37,7 @@ stages:
     - package
     - publish
 
-version \& tag release:
+version and tag release:
     stage: package
     tags:
         - test_runner
@@ -94,6 +94,7 @@ publish to pypi: # publish on PyPi
         - test_runner
 
     script:
+        - *install_common_tools
         - git pull origin master
         - git checkout master
         - rm -rf dist
