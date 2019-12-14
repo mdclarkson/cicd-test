@@ -101,7 +101,7 @@ Publish to PyPi: # publish on PyPi
         - rm -rf dist
         - pip3 install twine
         - python3 setup.py sdist
-        - twine -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} upload dist/*
+        - twine upload -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} dist/*
 
     only: 
         - master 
