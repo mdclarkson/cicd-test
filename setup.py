@@ -142,3 +142,4 @@ setuptools.setup(
     python_requires = python_requires,
     cmdclass = { 'version': Version, 'github': Github },
 )
+
