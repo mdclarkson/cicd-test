@@ -75,7 +75,6 @@ publish github release:
         - git push -u origin master
         - python3 -c'import pip; print(dir(pip))'
         - python3 setup.py -q github --create-release ${GITHUB_API_TOKEN}
-    
  
 # run unit tests:
 #     stage: test
