@@ -73,8 +73,6 @@ publish github release:
         - *configiure_git_repo
 
         - git push -u origin master
-        - *set_version_env_var 
-        - *create_github_release 
         - echo '>>>' $VERSION
     
  
