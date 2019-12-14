@@ -9,6 +9,7 @@ import re
 name = 'cicd-test'
 description = 'CICD pipeline tests'
 install_requires = [
+    'requests',
 ]
 keywords = []
 python_requires='>= 3.5'
