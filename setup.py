@@ -17,11 +17,6 @@ python_requires='>= 3.5'
 author = 'Chuck Orde'
 author_email = 'chuckorde@gmail.com'
 repo_user = 'chuckorde'
-repo_name = name
-
-repo_url = 'https://github.com/{}'
-download_url = '{}/archive/v{}/.tar.gz'
-release_api_url = 'https://api.github.com/repos/{}/{}/releases?access_token={}'
 
 license = 'BSD-3-Clause'
 classifiers=[
@@ -33,6 +28,11 @@ classifiers=[
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
  ]
+
+repo_name = name
+repo_url = 'https://github.com/{}'
+download_url = '{}/archive/v{}/.tar.gz'
+release_api_url = 'https://api.github.com/repos/{}/{}/releases?access_token={}'
 
 ###############################################################################
 

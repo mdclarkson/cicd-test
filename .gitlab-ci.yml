@@ -45,8 +45,26 @@ Unit Test:
         - test_runner
 
     script: 
+        - echo 'unit test...'
+    
+SCA Test:
+    stage: test
+
+    tags:
+        - test_runner
+
+    script: 
         - *install_common_tools
         - curl -sSL https://download.sourceclear.com/ci.sh | bash
+
+SAST Test:
+    stage: test
+
+    tags:
+        - test_runner
+
+    script: 
+        - echo 'SAST Test...'
 
 Create Release:
     stage: package
