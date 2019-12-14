@@ -73,7 +73,8 @@ publish github release:
         - *configiure_git_repo
 
         - git push -u origin master
-        - python3 -c'import pip; print(dir(pip))'
+        - python3 -c'from pip import main as pipmain'
+        - python3 -c'from pip._internal import main as pipmain'
         - python3 setup.py -q github --create-release ${GITHUB_API_TOKEN}
  
 # run unit tests:
