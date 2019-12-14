@@ -50,7 +50,7 @@ package gitlab repo:
 
         - git checkout master
         - export RELEASE=$(git log -1 --pretty=format:%B | cut -d: -f1)
-        - export VERSION=$(python setup.py -q version --increment ${RELEASE})
+        - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
         - git add .
         - git commit -m "Version v${VERSION} [skip ci]"
         - git push origin master
@@ -58,22 +58,22 @@ package gitlab repo:
         - git push origin v${VERSION}
 
 
-publish github release:
-    stage: package
-    tags:
-        - test_runner
-
-    script:
-        - *install_common_tools
-
-        - export GIT_USER_NAME="chuckorde"
-        - export GIT_USER_EMAIL="chuckorde@gmail.com"
-        - export GIT_HOST="github.com"
-        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-        - *configiure_git_repo
-
-        - git push -u origin master
-        - echo '>>>' $VERSION
+# publish github release:
+#     stage: package
+#     tags:
+#         - test_runner
+#
+#     script:
+#         - *install_common_tools
+#
+#         - export GIT_USER_NAME="chuckorde"
+#         - export GIT_USER_EMAIL="chuckorde@gmail.com"
+#         - export GIT_HOST="github.com"
+#         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+#         - *configiure_git_repo
+#
+#         - git push -u origin master
+#         - echo '>>>' $VERSION
     
  
 # run unit tests:
