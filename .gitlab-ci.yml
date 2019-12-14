@@ -46,16 +46,16 @@ package gitlab repo:
         - export GIT_USER_EMAIL="chuck@gitlab.mothership"
         - export GIT_HOST="gitlab.mothership"
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-        # - *configiure_git_repo
+        - *configiure_git_repo
 
-        # - git checkout master
-        # - export RELEASE=$(git log -1 --pretty=format:%B | cut -d: -f1)
-        # - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
-        # - git add .
-        # - git commit -m "Version v${VERSION} [skip ci]"
-        # - git push origin master
-        # - git tag -a v${VERSION} -m "Version ${VERSION}"
-        # - git push origin v${VERSION}
+        - git checkout master
+        - export RELEASE=$(git log -1 --pretty=format:%B | cut -d: -f1)
+        - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
+        - git add .
+        - git commit -m "Version v${VERSION} [skip ci]"
+        - git push origin master
+        - git tag -a v${VERSION} -m "Version ${VERSION}"
+        - git push origin v${VERSION}
 
 
 # publish github release:
