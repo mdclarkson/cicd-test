@@ -9,7 +9,7 @@ import re
 name = 'cicd-test'
 description = 'CICD pipeline tests'
 install_requires = [
-    'requests',
+    'django==2.2.3',
 ]
 keywords = []
 python_requires='>= 3.5'
