@@ -37,7 +37,7 @@ stages:
     - package
     - publish
 
-create gitlab tag:
+version \& tag release:
     stage: package
     tags:
         - test_runner
@@ -50,7 +50,8 @@ create gitlab tag:
         - export GIT_HOST="gitlab.mothership"
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
         - *configiure_git_repo
-
+        
+        - git pull origin master
         - git checkout master
         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
         - echo $RELEASE
@@ -64,7 +65,7 @@ create gitlab tag:
     only: 
         - master 
 
-create github release:
+publish release: # mirror Github and use API to create release
     stage: publish
     tags:
         - test_runner
@@ -72,6 +73,7 @@ create github release:
     script:
         - *install_common_tools
         - git pull origin master
+        - git checkout master
 
         - export GIT_USER_NAME="chuckorde"
         - export GIT_USER_EMAIL="chuckorde@gmail.com"
@@ -92,39 +94,13 @@ publish to pypi: # publish on PyPi
         - test_runner
 
     script:
-         - rm -rf dist
-         - pip3 install twine
-         - python3 setup.py sdist
-         - twine upload dist/*
+        - git pull origin master
+        - git checkout master
+        - rm -rf dist
+        - pip3 install twine
+        - python3 setup.py sdist
+        - twine upload dist/*
 
     only: 
         - master 
 
-# run unit tests:
-#     stage: test
-#     tags:
-#         - test_runner
-#
-#     script:
-#         - *install_common_tools
-#         - *create_veracode_credentials
-#
-#         - export GIT_USER_NAME="chuck"
-#         - export GIT_USER_EMAIL="chuck@gitlab.mothership"
-#         - export GIT_HOST="gitlab.mothership"
-#         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-#         - *configiure_git_repo
-#
-#         - git checkout master
-#         - *increment_semantic_version
-#         - git add .
-#         - git commit -m "Version: v${VERSION} [skip ci]"
-#         - git push origin master
-#
-#         - export GIT_USER_NAME="chuckorde"
-#         - export GIT_USER_EMAIL="chuckorde@gmail.com"
-#         - export GIT_HOST="github.com"
-#         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-#         - *configiure_git_repo
-#         - git push -u origin master
-#
