@@ -32,11 +32,21 @@
 
 variables:
     GIT_STRATEGY: clone
+    RUNNER: test_runner
 
 stages:
     - test
     - package
     - publish
+
+Unit Test:
+    stage: test
+
+    tags:
+        - ${RUNNER}
+
+    script: 
+        - echo 'TESTS'
 
 Create Release:
     stage: package
