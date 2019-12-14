@@ -46,7 +46,7 @@ package gitlab repo:
         - export GIT_USER_EMAIL="chuck@gitlab.mothership"
         - export GIT_HOST="gitlab.mothership"
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-        - *configiure_git_repo
+        # - *configiure_git_repo
 
         - git checkout master
         - export RELEASE=$(git log -1 --pretty=format:%B | cut -d: -f1)
