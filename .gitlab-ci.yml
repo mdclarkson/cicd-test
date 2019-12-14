@@ -2,7 +2,7 @@
 
 .install_common_tools: &install_common_tools |
     apt-get update -yqq
-    apt-get -qy install ssh git > /dev/null
+    apt-get -qy install ssh git curl > /dev/null
 
 .configure_git_repo: &configure_git_repo |
     export GIT_PROJECT_URL=\
@@ -45,7 +45,7 @@ Unit Test:
         - test_runner
 
     script: 
-        - - curl -sSL https://download.sourceclear.com/ci.sh | bash
+        - curl -sSL https://download.sourceclear.com/ci.sh | bash
 
 Create Release:
     stage: package
