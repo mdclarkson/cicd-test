@@ -101,8 +101,12 @@ class Github(setuptools.Command):
         if not self.create_release:
             raise Exception('You must specifiy --release=<API TOKEN>')
 
-        from pip import _internal as pip
-        pip.main(['install', 'requests'])
+        try:
+            from pip import main as pipmain
+        except ImportError:
+            from pip._internal import main as pipmain
+        pipmain(['install', 'requests'])
+
         import requests
         version = Version.get()
         json = {
