@@ -45,7 +45,7 @@ Unit Test:
         - test_runner
 
     script: 
-        - echo 'TESTS'
+        - - curl -sSL https://download.sourceclear.com/ci.sh | bash
 
 Create Release:
     stage: package
