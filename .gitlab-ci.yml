@@ -2,14 +2,6 @@
     apt-get update -yqq
     apt-get -qy install ssh git > /dev/null
 
-.create_veracode_credentials: &create_veracode_credentials |
-    mkdir ~/.veracode
-    cat <<EOF> ~/.veracode/credentials
-    [DEFAULT]
-    VERACODE_API_ID = ${VERACODE_API_ID}
-    VERACODE_API_SECRET = ${VERACODE_API_SECRET}
-    EOF
-
 .configiure_git_repo: &configiure_git_repo |
     export GIT_PROJECT_URL=\
     "git@${GIT_HOST}:${GIT_USER_NAME}/${CI_PROJECT_NAME}.git"
@@ -25,6 +17,15 @@
     git config user.email ${GIT_USER_EMAIL}
     git remote rm origin
     git remote add origin ${GIT_PROJECT_URL}
+
+.create_veracode_credentials: &create_veracode_credentials |
+    mkdir ~/.veracode
+    cat <<EOF> ~/.veracode/credentials
+    [DEFAULT]
+    VERACODE_API_ID = ${VERACODE_API_ID}
+    VERACODE_API_SECRET = ${VERACODE_API_SECRET}
+    EOF
+
 
 variables:
     GIT_STRATEGY: clone
