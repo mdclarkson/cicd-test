@@ -49,8 +49,9 @@ package gitlab repo:
         - *configiure_git_repo
 
         - git checkout master
-        - export RELEASE=$(git log -1 --pretty=format:%B | cut -d: -f1)
-        - echo $RELEASE
+        - git log -1 --pretty=format:%B | cut -d: -f1
+        # - export RELEASE=$(git log -1 --pretty=format:%B | cut -d: -f1)
+        # - echo $RELEASE
         # - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
         # - git add .
         # - git commit -m "Version v${VERSION} [skip ci]"
