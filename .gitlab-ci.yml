@@ -1,8 +1,10 @@
+############################ Helper Anchors ###################################
+
 .install_common_tools: &install_common_tools |
     apt-get update -yqq
     apt-get -qy install ssh git > /dev/null
 
-.configiure_git_repo: &configiure_git_repo |
+.configure_git_repo: &configure_git_repo |
     export GIT_PROJECT_URL=\
     "git@${GIT_HOST}:${GIT_USER_NAME}/${CI_PROJECT_NAME}.git"
     export DOMAIN=$(echo ${GIT_PROJECT_URL} | cut -d\@ -f2 | cut -d\: -f1)
@@ -26,7 +28,6 @@
     VERACODE_API_SECRET = ${VERACODE_API_SECRET}
     EOF
 
-
 ###############################################################################
 
 variables:
@@ -37,7 +38,7 @@ stages:
     - package
     - publish
 
-version and tag release:
+Create Release:
     stage: package
     tags:
         - test_runner
@@ -49,7 +50,7 @@ version and tag release:
         - export GIT_USER_EMAIL="chuck@gitlab.mothership"
         - export GIT_HOST="gitlab.mothership"
         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-        - *configiure_git_repo
+        - *configure_git_repo
         
         - git pull origin master
         - git checkout master
@@ -65,7 +66,7 @@ version and tag release:
     only: 
         - master 
 
-publish release: # mirror Github and use API to create release
+Github Mirror: # mirror Github and use API to create release
     stage: publish
     tags:
         - test_runner
@@ -79,16 +80,16 @@ publish release: # mirror Github and use API to create release
         - export GIT_USER_EMAIL="chuckorde@gmail.com"
         - export GIT_HOST="github.com"
         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-        - *configiure_git_repo
+        - *configure_git_repo
 
         - git push -u origin master
         - pip3 install requests # needed for github release
-        - python3 setup.py -q github --create-release ${GITHUB_API_TOKEN}
+        - python3 setup.py github --create-release ${GITHUB_API_TOKEN}
 
     only: 
         - master 
  
-publish to pypi: # publish on PyPi
+Publish to PyPi: # publish on PyPi
     stage: publish
     tags: 
         - test_runner
@@ -100,7 +101,7 @@ publish to pypi: # publish on PyPi
         - rm -rf dist
         - pip3 install twine
         - python3 setup.py sdist
-        - twine upload dist/*
+        - twine -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} upload dist/*
 
     only: 
         - master 
