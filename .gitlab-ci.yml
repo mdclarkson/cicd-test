@@ -74,8 +74,7 @@ publish github release:
         - *configiure_git_repo
 
         - git push -u origin master
-        - echo ${GITHUB_API_TOKEN}
-        - python3 setup.py -q gitlab --create-release ${GITHUB_API_TOKEN}
+        - python3 setup.py -q github --create-release ${GITHUB_API_TOKEN}
     
  
 # run unit tests:
