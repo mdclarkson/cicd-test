@@ -45,6 +45,7 @@ Unit Test:
         - test_runner
 
     script: 
+        - *install_common_tools
         - curl -sSL https://download.sourceclear.com/ci.sh | bash
 
 Create Release:
