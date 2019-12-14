@@ -66,6 +66,7 @@ publish github release:
 
     script:
         - *install_common_tools
+        - git pull origin master
 
         - export GIT_USER_NAME="chuckorde"
         - export GIT_USER_EMAIL="chuckorde@gmail.com"
