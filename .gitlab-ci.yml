@@ -104,5 +104,3 @@ publish github release:
 #         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
 #         - *configiure_git_repo
 #         - git push -u origin master
-#
-#
