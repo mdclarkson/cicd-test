@@ -50,7 +50,6 @@ package gitlab repo:
 
         - git checkout master
         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
-        - echo $RELEASE
         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
         - git add .
         - git commit -m "Version v${VERSION} [skip ci]"
@@ -74,6 +73,7 @@ publish github release:
         - *configiure_git_repo
 
         - git push -u origin master
+        - python3 -c'import pip; print(dir(pip))'
         - python3 setup.py -q github --create-release ${GITHUB_API_TOKEN}
     
  
