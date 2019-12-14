@@ -50,6 +50,8 @@ package gitlab repo:
 
         - git checkout master
         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
+        - echo $RELEASE
+        - [ -z $RELEASE ] || { echo 'No release defined in commit'; exit 1 } 
         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
         - git add .
         - git commit -m "Version v${VERSION} [skip ci]"
