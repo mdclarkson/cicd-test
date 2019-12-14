@@ -33,7 +33,7 @@ variables:
 stages:
     - test
     - package
-    - deploy
+    - publish
 
 package gitlab repo:
     stage: package
@@ -60,7 +60,7 @@ package gitlab repo:
 
 
 publish github release:
-    stage: package
+    stage: publish
     tags:
         - test_runner
 
@@ -104,4 +104,3 @@ publish github release:
 #         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
 #         - *configiure_git_repo
 #         - git push -u origin master
-#
