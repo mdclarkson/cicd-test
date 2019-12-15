@@ -59,6 +59,10 @@ SCA Test:
         - *install_common_tools
         - curl -sSL https://download.sourceclear.com/ci.sh | bash | tee sca.txt
 
+    artifacts:
+        paths:
+            - sca.txt
+
 SAST Test:
     stage: test
 
