@@ -13,48 +13,41 @@
     EOF
 
 .create_ssh_keys: &create_ssh_keys
-    script:
-        - umask 077
-        - mkdir -p ~/.ssh
-        - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/${GIT_HOST}
-        - ssh-keyscan -H ${GIT_HOST} > ~/.ssh/known_hosts
+    - umask 077
+    - mkdir -p ~/.ssh
+    - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/${GIT_HOST}
+    - ssh-keyscan -H ${GIT_HOST} > ~/.ssh/known_hosts
 
 .use_github_repo: &use_github_repo
-    script:
-        - eval $(ssh-agent -s)
-        - ssh-add ~/.ssh/${GITHUB_HOST}
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/${GITHUB_HOST}
 
-        - ORIGIN="git@${GITHUB_HOST}:${GITHUB_NAME}/${CI_PROJECT_NAME}.git"
-        - git config user.name  ${GITHUB_NAME}
-        - git config user.email ${GITHUB_EMAIL}
-        - git remote rm origin
-        - git remote add origin ${ORIGIN}
+    - ORIGIN="git@${GITHUB_HOST}:${GITHUB_NAME}/${CI_PROJECT_NAME}.git"
+    - git config user.name  ${GITHUB_NAME}
+    - git config user.email ${GITHUB_EMAIL}
+    - git remote rm origin
+    - git remote add origin ${ORIGIN}
 
 .use_gitlab_repo: &use_github_repo
-    script:
-        - eval $(ssh-agent -s)
-        - ssh-add ~/.ssh/${GITLAB_HOST}
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/${GITLAB_HOST}
 
-        - ORIGIN="git@${GITLAB_HOST}:${GITLAB_NAME}/${CI_PROJECT_NAME}.git"
-        - git config user.name  ${GITLAB_NAME}
-        - git config user.email ${GITLAB_EMAIL}
-        - git remote rm origin
-        - git remote add origin ${ORIGIN}
+    - ORIGIN="git@${GITLAB_HOST}:${GITLAB_NAME}/${CI_PROJECT_NAME}.git"
+    - git config user.name  ${GITLAB_NAME}
+    - git config user.email ${GITLAB_EMAIL}
+    - git remote rm origin
+    - git remote add origin ${ORIGIN}
 
 .create_job_artifacts: &create_job_artifacts
-    script:
-        - *create_veracode_credentials
+    - *create_veracode_credentials
 
-        - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-        - *create_ssh_keys
+    - export GIT_HOST=${GITLAB_HOST}
+    - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
+    - *create_ssh_keys
 
-        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-        - *create_ssh_keys
-
-    artifacts:
-        paths:
-            - ~/.ssh/
-            - ~/.veracode/
+    - export GIT_HOST=${GITHUB_HOST}
+    - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+    - *create_ssh_keys
 
 ################################# Set Up ######################################
 
@@ -85,6 +78,11 @@ Create Shared Artifacts:
 
     script:
         - *create_job_artifacts
+
+    artifacts:
+        paths:
+            - ~/.ssh/
+            - ~/.veracode/
 
 Unit Test:
     stage: test
