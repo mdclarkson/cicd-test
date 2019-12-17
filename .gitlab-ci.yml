@@ -40,14 +40,14 @@ stages:
 
 ############################## All Branches ###################################
 #
-Unit Test:
-    stage: test
-
-    tags:
-        - python
-
-    script: 
-        - echo 'unit test...'
+# Unit Test:
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script: 
+#         - echo 'unit test...'
     
 SCA Test:
     stage: test
@@ -64,14 +64,14 @@ SCA Test:
         paths:
             - sca_results.txt
 
-SAST Test:
-    stage: test
-
-    tags:
-        - python
-
-    script: 
-        - echo 'SAST Test...'
+# SAST Test:
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script: 
+#         - echo 'SAST Test...'
 
 ############################## Master Only ####################################
 #
@@ -118,6 +118,7 @@ Create Release:
         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
         
         - *create_veracode_credentials
+        - pip3 install veracode-python
         - python3 update_readme.py 'veracode-python' #"${CI_PROJECT_NAME}"
 
         - git add -u
