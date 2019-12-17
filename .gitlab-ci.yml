@@ -59,8 +59,6 @@ stages:
     - publish
 
 ############################ Branchs Dev / Master  ############################
-default:
-    script: *install_common_tools
 
 Create Shared Artifacts:
     stage: configure
@@ -69,6 +67,7 @@ Create Shared Artifacts:
         - python
 
     script:
+        - *install_common_tools
         - *create_veracode_credentials
 
         - export GIT_HOST=${GITLAB_HOST}
