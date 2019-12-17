@@ -59,6 +59,8 @@ stages:
     - publish
 
 ############################ Branchs Dev / Master  ############################
+default:
+    script: *install_common_tools
 
 Create Shared Artifacts:
     stage: configure
