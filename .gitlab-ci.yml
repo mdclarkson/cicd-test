@@ -22,7 +22,6 @@
         - git remote rm origin
         - git remote add origin ${ORIGIN}
 
-
 ################################# Set Up ######################################
 
 variables:
@@ -49,176 +48,148 @@ before_script:
 
     - mkdir -p ~/.ssh
     - echo "${GITLAB_SSH_PRIVATE_KEY}" > ~/.ssh/${GITLAB_HOST}
-    - ssh-keyscan -H ${GITLAB_HOST} > ~/.ssh/known_hosts
+    - ssh-keyscan -H ${GITLAB_HOST}  > ~/.ssh/known_hosts
     - echo "${GITHUB_SSH_PRIVATE_KEY}" > ~/.ssh/${GITHUB_HOST}
-    - ssh-keyscan -H ${GITHUB_HOST} > ~/.ssh/known_hosts
+    - ssh-keyscan -H ${GITHUB_HOST} >> ~/.ssh/known_hosts
 
 stages:
-    - configure
     - test
     - package
     - publish
 
 ############################ Branchs Dev / Master  ############################
 
-Create Shared1 Artifacts:
-    stage: configure
+
+Unit Test:
+    stage: test
 
     tags:
         - python
 
-    <<: *use_gitlab_repo
+    script:
+        - pip3 install -e .
+        - python3 tests.py
+
+    only:
+        - dev
+        - master
+
+SCA Test:
+    stage: test
+
+    tags:
+        - python
+
     script: 
-        - git config user.email
+        - curl -sSL https://download.sourceclear.com/ci.sh | bash 
+          | tee sca_results.txt
 
-Create Shared2 Artifacts:
-    stage: configure
+    artifacts:
+        paths:
+            - sca_results.txt
+
+    only:
+        - dev
+        - master
+
+SAST Sandbox Test:
+    stage: test
 
     tags:
         - python
+
+    script: 
+        - zip project.zip setup.* LICENCE.txt -r veracode/ 
+        - pip3 install veracode-python
+
+        - veracode-cli scan
+            --app="${CI_PROJECT_NAME}"
+            --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
+            --sandbox='Development Build'
+            --files='project.zip'
+            --timeout=30
+
+    only:
+        - dev
+
+############################## Master Only ####################################
+
+SAST Policy Test:
+    stage: test
+
+    tags:
+        - python
+
+    script: 
+        - zip project.zip setup.* LICENCE.txt -r veracode/ 
+        - pip3 install veracode-python
+
+        - veracode-cli scan
+            --app="${CI_PROJECT_NAME}"
+            --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
+            --files='project.zip'
+            --timeout=30
+
+    only:
+        - master
+
+Create Release:
+    stage: package
+    tags:
+        - python
+
+    <<: *use_gitlab_repo        
+    script:
+        - git pull origin master
+        - git checkout master
+        - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
+        - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
+
+        - pip3 install veracode-python
+        - git clone git@gitlab.mothership:chuck/cicd-test.git
+        - python3 cicd-test/update_readme.py "${CI_PROJECT_NAME}"
+
+        - git add -u
+        - git commit -m "Release v${VERSION} [skip ci]"
+        - git push origin master
+        - git tag -a v${VERSION} -m "Release ${VERSION}"
+        - git push origin v${VERSION}
+
+    only: 
+        - master 
+
+Mirror to Github: # mirror Github and use API to create release
+    stage: publish
+    tags:
+        - python
+
+    script:
+        - git pull origin master
+        - git checkout master
 
     <<: *use_github_repo
-    script: 
-        - git config user.email
+    script:
+        - git push -u origin master --force
+        - pip3 install requests # needed for github release
+        - python3 setup.py github --create-release ${GITHUB_API_TOKEN}
 
-# Unit Test:
-#     stage: test
-#
-#     tags:
-#         - python
-#
-#     script: # Set up API credentials and run tests
-#         - pip3 install -e .
-#         - python3 tests.py
-#
-#     only:
-#         - dev
-#         - master
-#
-# SCA Test:
-#     stage: test
-#
-#     tags:
-#         - python
-#
-#     script: 
-#         - *install_common_tools
-#         - curl -sSL https://download.sourceclear.com/ci.sh | bash 
-#           | tee sca_results.txt
-#
-#     artifacts:
-#         paths:
-#             - sca_results.txt
-#
-#     only:
-#         - dev
-#         - master
-#
-# SAST Sandbox Test:
-#     stage: test
-#
-#     tags:
-#         - python
-#
-#     script: 
-#         - *install_common_tools
-#
-#         - zip project.zip setup.* LICENCE.txt -r veracode/ 
-#         - pip3 install veracode-python
-#
-#         # - veracode-cli scan
-#         #     --app="${CI_PROJECT_NAME}"
-#         #     --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
-#         #     --sandbox='Development Build'
-#         #     --files='project.zip'
-#         #     --timeout=30
-#
-#     only:
-#         - dev
-#
-# ############################## Master Only ####################################
-#
-# SAST Policy Test:
-#     stage: test
-#
-#     tags:
-#         - python
-#
-#     script: 
-#         - *install_common_tools
-#
-#         - zip project.zip setup.* LICENCE.txt -r veracode/ 
-#         - pip3 install veracode-python
-#
-#         # - veracode-cli scan
-#         #     --app="${CI_PROJECT_NAME}"
-#         #     --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
-#         #     --files='project.zip'
-#         #     --timeout=30
-#
-#     only:
-#         - master
-#
-# Create Release:
-#     stage: package
-#     tags:
-#         - python
-#
-#     script:
-#         - *install_common_tools
-#
-#         - *use_gitlab_repo        
-#         - git pull origin master
-#         - git checkout master
-#         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
-#         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
-#
-#         - pip3 install veracode-python
-#         - git clone git@gitlab.mothership:chuck/cicd-test.git
-#         - python3 cicd-test/update_readme.py "${CI_PROJECT_NAME}"
-#
-#         - git add -u
-#         - git commit -m "Release v${VERSION} [skip ci]"
-#         - git push origin master
-#         - git tag -a v${VERSION} -m "Release ${VERSION}"
-#         - git push origin v${VERSION}
-#
-#     only: 
-#         - master 
-#
-# Mirror to Github: # mirror Github and use API to create release
-#     stage: publish
-#     tags:
-#         - python
-#
-#     script:
-#         - *install_common_tools
-#         - git pull origin master
-#         - git checkout master
-#
-#         - *use_github_repo
-#         - git push -u origin master --force
-#         - pip3 install requests # needed for github release
-#         - python3 setup.py github --create-release ${GITHUB_API_TOKEN}
-#
-#     only: 
-#         - master 
-#  
-# Publish to PyPi: # publish on PyPi
-#     stage: publish
-#     tags: 
-#         - python
-#
-#     script:
-#         - *install_common_tools
-#         - git pull origin master
-#         - git checkout master
-#         - rm -rf dist
-#         - pip3 install twine
-#         - python3 setup.py sdist
-#         - twine upload -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} dist/*
-#
-#     only: 
-#         - master 
-#
-#
+    only: 
+        - master 
+
+Publish to PyPi: # publish on PyPi
+    stage: publish
+    tags: 
+        - python
+
+    script:
+        - git pull origin master
+        - git checkout master
+        - rm -rf dist
+        - pip3 install twine
+        - python3 setup.py sdist
+        - twine upload -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} dist/*
+
+    only: 
+        - master 
+
+
