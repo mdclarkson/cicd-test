@@ -10,7 +10,6 @@ with open('sca_results.txt') as f:
 sca_table = []
 selected = [
     'Scan Date & Time', 'Vulnerable Libraries', 
-    'Third Party Code', 'With Vulnerable Methods', 
     'High Risk Vulnerabilities' ,'Medium Risk Vulnerabilities',
     'Low Risk Vulnerabilities'
     ]
@@ -38,8 +37,6 @@ def sast_results():
     html = f'''
 	<table>
 		<tr><td>Scan Date</td><td>{app.info.modified_date.strftime('%b %d %Y')}</td></tr>
-		<tr><td>Policy</td><td>{app.policy}</td></tr>
-		<tr><td>Policy Compliance</td><td>{app.build.policy.compliance}</td></tr>
 		<tr><td>Very High Risk Vulnerabilities</td><td>{app.build.report.flaw_status.sev_5_change}</td></tr>
 		<tr><td>High Risk Vulnerabilities</td><td>{app.build.report.flaw_status.sev_4_change}</td></tr>
 		<tr><td>Medium Risk Vulnerabilities</td><td>{app.build.report.flaw_status.sev_3_change}</td></tr>
