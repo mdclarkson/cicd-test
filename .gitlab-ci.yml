@@ -54,6 +54,17 @@ variables:
 
 before_script:
     - *install_common_tools
+    - *create_veracode_credentials
+
+    - export GIT_HOST=${GITLAB_HOST}
+    - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
+    - *create_ssh_keys
+
+    - export GIT_HOST=${GITHUB_HOST}
+    - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+    - *create_ssh_keys
+
+    - ls -al ~/.ssh/ ~/.veracode
 
 stages:
     - configure
@@ -63,30 +74,23 @@ stages:
 
 ############################ Branchs Dev / Master  ############################
 
-Create Shared Artifacts:
+Create Shared1 Artifacts:
     stage: configure
 
     tags:
         - python
 
-    script:
-        - *install_common_tools
-        - *create_veracode_credentials
-
-        - export GIT_HOST=${GITLAB_HOST}
-        - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-        - *create_ssh_keys
-
-        - export GIT_HOST=${GITHUB_HOST}
-        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-        - *create_ssh_keys
-
+    script: 
         - ls -al ~/.ssh/ ~/.veracode
 
-    artifacts:
-        paths:
-            - ~/.ssh/*
-            - ~/.veracode/*
+Create Shared1 Artifacts:
+    stage: configure
+
+    tags:
+        - python
+
+    script: 
+        - ls -al ~/.ssh/ ~/.veracode
 
 # Unit Test:
 #     stage: test
