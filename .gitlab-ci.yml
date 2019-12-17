@@ -38,16 +38,6 @@
     - git remote rm origin
     - git remote add origin ${ORIGIN}
 
-.create_job_artifacts: &create_job_artifacts
-    - *create_veracode_credentials
-
-    - export GIT_HOST=${GITLAB_HOST}
-    - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-    - *create_ssh_keys
-
-    - export GIT_HOST=${GITHUB_HOST}
-    - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-    - *create_ssh_keys
 
 ################################# Set Up ######################################
 
@@ -77,7 +67,15 @@ Create Shared Artifacts:
         - python
 
     script:
-        - *create_job_artifacts
+        - *create_veracode_credentials
+
+        - export GIT_HOST=${GITLAB_HOST}
+        - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
+        - *create_ssh_keys
+
+        - export GIT_HOST=${GITHUB_HOST}
+        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+        - *create_ssh_keys
 
     artifacts:
         paths:
