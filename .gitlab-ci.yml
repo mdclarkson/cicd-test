@@ -11,7 +11,7 @@
         - git remote rm origin
         - git remote add origin ${ORIGIN}
 
-.use_gitlab_repo: &use_github_repo
+.use_gitlab_repo: &use_gitlab_repo
     script:
         - eval $(ssh-agent -s)
         - ssh-add ~/.ssh/${GITLAB_HOST}
