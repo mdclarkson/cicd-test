@@ -44,7 +44,7 @@ Unit Test:
     stage: test
 
     tags:
-        - test_runner
+        - python
 
     script: 
         - echo 'unit test...'
@@ -53,7 +53,7 @@ SCA Test:
     stage: test
 
     tags:
-        - test_runner
+        - python
 
     script: 
         - *install_common_tools
@@ -68,78 +68,88 @@ SAST Test:
     stage: test
 
     tags:
-        - test_runner
+        - python
 
     script: 
         - echo 'SAST Test...'
 
 ############################## Master Only ####################################
-
-Create Release:
+#
+SAST Test:
     stage: package
+
     tags:
-        - test_runner
+        - python
 
-    script:
-        - *install_common_tools
+    script: 
+        - echo 'SAST Test...'
+        - cat sca_results.txt
 
-        - export GIT_USER_NAME="chuck"
-        - export GIT_USER_EMAIL="chuck@gitlab.mothership"
-        - export GIT_HOST="gitlab.mothership"
-        - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-        - *configure_git_repo
-        
-        - git pull origin master
-        - git checkout master
-        - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
-        - echo $RELEASE
-        - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
-        - git add .
-        - git commit -m "Version v${VERSION} [skip ci]"
-        - git push origin master
-        - git tag -a v${VERSION} -m "Version ${VERSION}"
-        - git push origin v${VERSION}
-
-    only: 
-        - master 
-
-Github Mirror: # mirror Github and use API to create release
-    stage: publish
-    tags:
-        - test_runner
-
-    script:
-        - *install_common_tools
-        - git pull origin master
-        - git checkout master
-
-        - export GIT_USER_NAME="chuckorde"
-        - export GIT_USER_EMAIL="chuckorde@gmail.com"
-        - export GIT_HOST="github.com"
-        - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-        - *configure_git_repo
-
-        - git push -u origin master
-        - pip3 install requests # needed for github release
-        - python3 setup.py github --create-release ${GITHUB_API_TOKEN}
-
-    only: 
-        - master 
- 
-Publish to PyPi: # publish on PyPi
-    stage: publish
-    tags: 
-        - test_runner
-
-    script:
-        - *install_common_tools
-        - git pull origin master
-        - git checkout master
-        - rm -rf dist
-        - pip3 install twine
-        - python3 setup.py sdist
-        - twine upload -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} dist/*
-
-    only: 
-        - master 
+# Create Release:
+#     stage: package
+#     tags:
+#         - python
+#
+#     script:
+#         - *install_common_tools
+#
+#         - export GIT_USER_NAME="chuck"
+#         - export GIT_USER_EMAIL="chuck@gitlab.mothership"
+#         - export GIT_HOST="gitlab.mothership"
+#         - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
+#         - *configure_git_repo
+#         
+#         - git pull origin master
+#         - git checkout master
+#         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
+#         - echo $RELEASE
+#         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
+#         - git add .
+#         - git commit -m "Version v${VERSION} [skip ci]"
+#         - git push origin master
+#         - git tag -a v${VERSION} -m "Version ${VERSION}"
+#         - git push origin v${VERSION}
+#
+#     only: 
+#         - master 
+#
+# Github Mirror: # mirror Github and use API to create release
+#     stage: publish
+#     tags:
+#         - python
+#
+#     script:
+#         - *install_common_tools
+#         - git pull origin master
+#         - git checkout master
+#
+#         - export GIT_USER_NAME="chuckorde"
+#         - export GIT_USER_EMAIL="chuckorde@gmail.com"
+#         - export GIT_HOST="github.com"
+#         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
+#         - *configure_git_repo
+#
+#         - git push -u origin master
+#         - pip3 install requests # needed for github release
+#         - python3 setup.py github --create-release ${GITHUB_API_TOKEN}
+#
+#     only: 
+#         - master 
+#  
+# Publish to PyPi: # publish on PyPi
+#     stage: publish
+#     tags: 
+#         - python
+#
+#     script:
+#         - *install_common_tools
+#         - git pull origin master
+#         - git checkout master
+#         - rm -rf dist
+#         - pip3 install twine
+#         - python3 setup.py sdist
+#         - twine upload -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD} dist/*
+#
+#     only: 
+#         - master 
 
