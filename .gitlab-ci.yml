@@ -120,6 +120,8 @@ Create Release:
         - *create_veracode_credentials
         - pip3 install veracode-python
         - python3 update_readme.py 'veracode-python' #"${CI_PROJECT_NAME}"
+        - cat README.md
+        - git status
 
         - git add -u
         - git commit -m "Version v${VERSION} [skip ci]"
