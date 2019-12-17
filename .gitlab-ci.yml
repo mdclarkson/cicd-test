@@ -1,42 +1,26 @@
 ############################ Helper Anchors ###################################
 
-.install_common_tools: &install_common_tools |
-    apt-get update -yqq
-    apt-get -qy install ssh git curl zip > /dev/null
-
-.create_veracode_credentials: &create_veracode_credentials |
-    mkdir ~/.veracode
-    cat <<EOF> ~/.veracode/credentials
-    [DEFAULT]
-    VERACODE_API_ID = ${VERACODE_API_ID}
-    VERACODE_API_SECRET = ${VERACODE_API_SECRET}
-    EOF
-
-.create_ssh_keys: &create_ssh_keys |
-    umask 077
-    mkdir -p ~/.ssh
-    echo "${SSH_PRIVATE_KEY}" > ~/.ssh/${GIT_HOST}
-    ssh-keyscan -H ${GIT_HOST} > ~/.ssh/known_hosts
-
 .use_github_repo: &use_github_repo
-    - eval $(ssh-agent -s)
-    - ssh-add ~/.ssh/${GITHUB_HOST}
+    script:
+        - eval $(ssh-agent -s)
+        - ssh-add ~/.ssh/${GITHUB_HOST}
 
-    - ORIGIN="git@${GITHUB_HOST}:${GITHUB_NAME}/${CI_PROJECT_NAME}.git"
-    - git config user.name  ${GITHUB_NAME}
-    - git config user.email ${GITHUB_EMAIL}
-    - git remote rm origin
-    - git remote add origin ${ORIGIN}
+        - ORIGIN="git@${GITHUB_HOST}:${GITHUB_NAME}/${CI_PROJECT_NAME}.git"
+        - git config user.name  ${GITHUB_NAME}
+        - git config user.email ${GITHUB_EMAIL}
+        - git remote rm origin
+        - git remote add origin ${ORIGIN}
 
 .use_gitlab_repo: &use_github_repo
-    - eval $(ssh-agent -s)
-    - ssh-add ~/.ssh/${GITLAB_HOST}
+    script:
+        - eval $(ssh-agent -s)
+        - ssh-add ~/.ssh/${GITLAB_HOST}
 
-    - ORIGIN="git@${GITLAB_HOST}:${GITLAB_NAME}/${CI_PROJECT_NAME}.git"
-    - git config user.name  ${GITLAB_NAME}
-    - git config user.email ${GITLAB_EMAIL}
-    - git remote rm origin
-    - git remote add origin ${ORIGIN}
+        - ORIGIN="git@${GITLAB_HOST}:${GITLAB_NAME}/${CI_PROJECT_NAME}.git"
+        - git config user.name  ${GITLAB_NAME}
+        - git config user.email ${GITLAB_EMAIL}
+        - git remote rm origin
+        - git remote add origin ${ORIGIN}
 
 
 ################################# Set Up ######################################
@@ -53,18 +37,21 @@ variables:
     GITHUB_HOST: "github.com"
 
 before_script:
-    - *install_common_tools
-    - *create_veracode_credentials
+    - apt-get update -yqq
+    - apt-get -qy install ssh git curl zip > /dev/null
+    - umask 077
 
-    - export GIT_HOST=${GITLAB_HOST}
-    - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-    - *create_ssh_keys
+    - mkdir -p ~/.veracode
+    - echo "[DEFAULT]" > ~/.veracode/credentials
+    - echo "VERACODE_API_ID = ${VERACODE_API_ID}" >> ~/.veracode/credentials
+    - echo "VERACODE_API_SECRET = ${VERACODE_API_SECRET}" >> 
+      ~/.veracode/credentials
 
-    - export GIT_HOST=${GITHUB_HOST}
-    - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-    - *create_ssh_keys
-
-    - ls -al ~/.ssh/ ~/.veracode
+    - mkdir -p ~/.ssh
+    - echo "${GITLAB_SSH_PRIVATE_KEY}" > ~/.ssh/${GITLAB_HOST}
+    - ssh-keyscan -H ${GITLAB_HOST} > ~/.ssh/known_hosts
+    - echo "${GITHUB_SSH_PRIVATE_KEY}" > ~/.ssh/${GITHUB_HOST}
+    - ssh-keyscan -H ${GITHUB_HOST} > ~/.ssh/known_hosts
 
 stages:
     - configure
@@ -80,17 +67,19 @@ Create Shared1 Artifacts:
     tags:
         - python
 
+    <<: *use_gitlab_repo
     script: 
-        - ls -al ~/.ssh/ ~/.veracode
+        - git config user.email
 
-Create Shared1 Artifacts:
+Create Shared2 Artifacts:
     stage: configure
 
     tags:
         - python
 
+    <<: *use_github_repo
     script: 
-        - ls -al ~/.ssh/ ~/.veracode
+        - git config user.email
 
 # Unit Test:
 #     stage: test
