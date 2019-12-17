@@ -88,7 +88,7 @@ SAST Test:
 
         - pip3 install veracode-python
         - *create_veracode_credentials
-        - python3 update_readme.py "${CI_PROJECT_NAME}"
+        - python3 update_readme.py 'veracode-python' #"${CI_PROJECT_NAME}"
 
         - git add -u
         - git commit -m "Version v${VERSION} [skip ci]"
