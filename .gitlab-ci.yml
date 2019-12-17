@@ -82,84 +82,84 @@ Create Shared Artifacts:
             - ~/.ssh/
             - ~/.veracode/
 
-Unit Test:
-    stage: test
-
-    tags:
-        - python
-
-    script: # Set up API credentials and run tests
-        - pip3 install -e .
-        - python3 tests.py
-
-    only:
-        - dev
-        - master
-
-SCA Test:
-    stage: test
-
-    tags:
-        - python
-
-    script: 
-        - *install_common_tools
-        - curl -sSL https://download.sourceclear.com/ci.sh | bash 
-          | tee sca_results.txt
-
-    artifacts:
-        paths:
-            - sca_results.txt
-
-    only:
-        - dev
-        - master
-
-SAST Sandbox Test:
-    stage: test
-
-    tags:
-        - python
-
-    script: 
-        - *install_common_tools
-
-        - zip project.zip setup.* LICENCE.txt -r veracode/ 
-        - pip3 install veracode-python
-
-        # - veracode-cli scan
-        #     --app="${CI_PROJECT_NAME}"
-        #     --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
-        #     --sandbox='Development Build'
-        #     --files='project.zip'
-        #     --timeout=30
-
-    only:
-        - dev
-
-############################## Master Only ####################################
-
-SAST Policy Test:
-    stage: test
-
-    tags:
-        - python
-
-    script: 
-        - *install_common_tools
-
-        - zip project.zip setup.* LICENCE.txt -r veracode/ 
-        - pip3 install veracode-python
-
-        # - veracode-cli scan
-        #     --app="${CI_PROJECT_NAME}"
-        #     --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
-        #     --files='project.zip'
-        #     --timeout=30
-
-    only:
-        - master
-
+# Unit Test:
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script: # Set up API credentials and run tests
+#         - pip3 install -e .
+#         - python3 tests.py
+#
+#     only:
+#         - dev
+#         - master
+#
+# SCA Test:
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script: 
+#         - *install_common_tools
+#         - curl -sSL https://download.sourceclear.com/ci.sh | bash 
+#           | tee sca_results.txt
+#
+#     artifacts:
+#         paths:
+#             - sca_results.txt
+#
+#     only:
+#         - dev
+#         - master
+#
+# SAST Sandbox Test:
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script: 
+#         - *install_common_tools
+#
+#         - zip project.zip setup.* LICENCE.txt -r veracode/ 
+#         - pip3 install veracode-python
+#
+#         # - veracode-cli scan
+#         #     --app="${CI_PROJECT_NAME}"
+#         #     --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
+#         #     --sandbox='Development Build'
+#         #     --files='project.zip'
+#         #     --timeout=30
+#
+#     only:
+#         - dev
+#
+# ############################## Master Only ####################################
+#
+# SAST Policy Test:
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script: 
+#         - *install_common_tools
+#
+#         - zip project.zip setup.* LICENCE.txt -r veracode/ 
+#         - pip3 install veracode-python
+#
+#         # - veracode-cli scan
+#         #     --app="${CI_PROJECT_NAME}"
+#         #     --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
+#         #     --files='project.zip'
+#         #     --timeout=30
+#
+#     only:
+#         - master
+#
 # Create Release:
 #     stage: package
 #     tags:
