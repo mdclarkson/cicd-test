@@ -82,8 +82,8 @@ Create Shared Artifacts:
 
     artifacts:
         paths:
-            - ~/.ssh/
-            - ~/.veracode/
+            - ~/.ssh/*
+            - ~/.veracode/*
 
 # Unit Test:
 #     stage: test
