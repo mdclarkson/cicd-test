@@ -119,10 +119,8 @@ Create Release:
         
         - *create_veracode_credentials
         - pip3 install veracode-python
-        - curl
-           http://gitlab.mothership/chuck/cicd-test/raw/master/update_readme.py
-        - -o update_readme.py
-        - python3 update_readme.py 'veracode-python' #"${CI_PROJECT_NAME}"
+        - git clone http://gitlab.mothership/chuck/cicd-test.git
+        - python3 cicd-test/update_readme.py 'veracode-python' #"${CI_PROJECT_NAME}"
         - cat README.md
         - git status
 
