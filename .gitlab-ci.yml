@@ -99,7 +99,8 @@ SAST Sandbox Test:
         - python
 
     script: 
-        - zip project.zip setup.* LICENCE.txt -r veracode/ 
+        - zip project.zip 
+          setup.* LICENCE.txt -r $(${CI_PROJECT_NAME} | cut -d'-' -f1)
         - pip3 install veracode-python
 
         - veracode-cli scan
