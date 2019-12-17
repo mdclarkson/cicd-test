@@ -62,8 +62,8 @@ with open('README.md', 'r') as f:
     readme = f.read()
     
 
-top = readme[:readme.index('<!-- results -->')]
-bottom = readme[readme.index('<!-- end results -->')+20:]
+top = readme[:readme.index('<!-- results -->')+16]
+bottom = readme[readme.index('<!-- end results -->'):]
 
 md = top + html + bottom
 
