@@ -52,6 +52,9 @@ variables:
     GITHUB_EMAIL: "chuckorde@gmail.com"
     GITHUB_HOST: "github.com"
 
+before_script:
+    - *install_common_tools
+
 stages:
     - configure
     - test
