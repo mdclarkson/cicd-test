@@ -78,7 +78,7 @@ Create Shared Artifacts:
         - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
         - *create_ssh_keys
 
-        - ls -al ~
+        - ls -al ~/.ssh/ ~/.veracode
 
     artifacts:
         paths:
