@@ -1,12 +1,12 @@
 
 # CICD Automation Tests
 
-<!-- results -->
+
 <table>
 <tr><th>Veracode SCA Results</th><th>Veracode SAST Results</th></tr>
 <tr>
     <td><table>
-		<tr><td>Scan Date & Time</td><td>Dec 17 2019 02:06AM UTC</td></tr>
+		<tr><td>Scan Date & Time</td><td>Dec 17 2019 02:31AM UTC</td></tr>
 		<tr><td>Vulnerable Libraries</td><td>0</td></tr>
 		<tr><td>Third Party Code</td><td>99.3%</td></tr>
 		<tr><td>With Vulnerable Methods</td><td>0</td></tr>
@@ -28,4 +28,3 @@
 </tr>
 </table>
 
-<!-- end results -->
