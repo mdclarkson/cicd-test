@@ -1,7 +1,6 @@
-
 # CICD Automation Tests
 
-
+<!-- results -->
 <table>
 <tr><th>Veracode SCA Results</th><th>Veracode SAST Results</th></tr>
 <tr>
@@ -27,4 +26,4 @@
     </td>
 </tr>
 </table>
-
+<!-- end results -->
