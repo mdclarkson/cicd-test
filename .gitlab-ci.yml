@@ -87,6 +87,7 @@ SAST Test:
         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
 
         - pip3 install veracode-python
+        - *install_common_tools
         - *create_veracode_credentials
         - python3 update_readme.py 'veracode-python' #"${CI_PROJECT_NAME}"
 
