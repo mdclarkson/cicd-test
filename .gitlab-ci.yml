@@ -141,8 +141,8 @@ Create Release:
 
     <<: *use_gitlab_repo        
     script:
-        - git pull origin master
-        - git checkout master
+        # - git pull origin master
+        # - git checkout master
         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
 
@@ -164,9 +164,9 @@ Mirror to Github: # mirror Github and use API to create release
     tags:
         - python
 
-    script:
-        - git pull origin master
-        - git checkout master
+    # script:
+    #     - git pull origin master
+    #     - git checkout master
 
     <<: *use_github_repo
     script:
@@ -183,8 +183,8 @@ Publish to PyPi: # publish on PyPi
         - python
 
     script:
-        - git pull origin master
-        - git checkout master
+        # - git pull origin master
+        # - git checkout master
         - rm -rf dist
         - pip3 install twine
         - python3 setup.py sdist
