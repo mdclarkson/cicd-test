@@ -1,53 +1,26 @@
 ############################ Helper Anchors ###################################
 
-.install_common_tools: &install_common_tools |
-    apt-get update -yqq
-    apt-get -qy install ssh git curl zip > /dev/null
-
-.create_veracode_credentials: &create_veracode_credentials |
-    mkdir ~/.veracode
-    cat <<EOF> ~/.veracode/credentials
-    [DEFAULT]
-    VERACODE_API_ID = ${VERACODE_API_ID}
-    VERACODE_API_SECRET = ${VERACODE_API_SECRET}
-    EOF
-
-.create_ssh_keys: &create_ssh_keys
-    - umask 077
-    - mkdir -p ~/.ssh
-    - echo "${SSH_PRIVATE_KEY}" > ~/.ssh/${GIT_HOST}
-    - ssh-keyscan -H ${GIT_HOST} > ~/.ssh/known_hosts
-
 .use_github_repo: &use_github_repo
-    - eval $(ssh-agent -s)
-    - ssh-add ~/.ssh/${GITHUB_HOST}
+    script:
+        - eval $(ssh-agent -s)
+        - ssh-add ~/.ssh/${GITHUB_HOST}
 
-    - ORIGIN="git@${GITHUB_HOST}:${GITHUB_NAME}/${CI_PROJECT_NAME}.git"
-    - git config user.name  ${GITHUB_NAME}
-    - git config user.email ${GITHUB_EMAIL}
-    - git remote rm origin
-    - git remote add origin ${ORIGIN}
+        - ORIGIN="git@${GITHUB_HOST}:${GITHUB_NAME}/${CI_PROJECT_NAME}.git"
+        - git config user.name  ${GITHUB_NAME}
+        - git config user.email ${GITHUB_EMAIL}
+        - git remote rm origin
+        - git remote add origin ${ORIGIN}
 
-.use_gitlab_repo: &use_github_repo
-    - eval $(ssh-agent -s)
-    - ssh-add ~/.ssh/${GITLAB_HOST}
+.use_gitlab_repo: &use_gitlab_repo
+    script:
+        - eval $(ssh-agent -s)
+        - ssh-add ~/.ssh/${GITLAB_HOST}
 
-    - ORIGIN="git@${GITLAB_HOST}:${GITLAB_NAME}/${CI_PROJECT_NAME}.git"
-    - git config user.name  ${GITLAB_NAME}
-    - git config user.email ${GITLAB_EMAIL}
-    - git remote rm origin
-    - git remote add origin ${ORIGIN}
-
-.create_job_artifacts: &create_job_artifacts
-    - *create_veracode_credentials
-
-    - export GIT_HOST=${GITLAB_HOST}
-    - export SSH_PRIVATE_KEY=${GITLAB_SSH_PRIVATE_KEY}
-    - *create_ssh_keys
-
-    - export GIT_HOST=${GITHUB_HOST}
-    - export SSH_PRIVATE_KEY=${GITHUB_SSH_PRIVATE_KEY}
-    - *create_ssh_keys
+        - ORIGIN="git@${GITLAB_HOST}:${GITLAB_NAME}/${CI_PROJECT_NAME}.git"
+        - git config user.name  ${GITLAB_NAME}
+        - git config user.email ${GITLAB_EMAIL}
+        - git remote rm origin
+        - git remote add origin ${ORIGIN}
 
 ################################# Set Up ######################################
 
@@ -62,27 +35,30 @@ variables:
     GITHUB_EMAIL: "chuckorde@gmail.com"
     GITHUB_HOST: "github.com"
 
+before_script:
+    - apt-get update -yqq
+    - apt-get -qy install ssh git curl zip > /dev/null
+    - umask 077
+
+    - mkdir -p ~/.veracode
+    - echo "[DEFAULT]" > ~/.veracode/credentials
+    - echo "VERACODE_API_ID = ${VERACODE_API_ID}" >> ~/.veracode/credentials
+    - echo "VERACODE_API_SECRET = ${VERACODE_API_SECRET}" >> 
+      ~/.veracode/credentials
+
+    - mkdir -p ~/.ssh
+    - echo "${GITLAB_SSH_PRIVATE_KEY}" > ~/.ssh/${GITLAB_HOST}
+    - ssh-keyscan -H ${GITLAB_HOST}  > ~/.ssh/known_hosts
+    - echo "${GITHUB_SSH_PRIVATE_KEY}" > ~/.ssh/${GITHUB_HOST}
+    - ssh-keyscan -H ${GITHUB_HOST} >> ~/.ssh/known_hosts
+
 stages:
-    - configure
     - test
     - package
     - publish
 
 ############################ Branchs Dev / Master  ############################
 
-Create Shared Artifacts:
-    stage: configure
-
-    tags:
-        - python
-
-    script:
-        - *create_job_artifacts
-
-    artifacts:
-        paths:
-            - ~/.ssh/
-            - ~/.veracode/
 
 Unit Test:
     stage: test
@@ -90,7 +66,7 @@ Unit Test:
     tags:
         - python
 
-    script: # Set up API credentials and run tests
+    script:
         - pip3 install -e .
         - python3 tests.py
 
@@ -105,7 +81,6 @@ SCA Test:
         - python
 
     script: 
-        - *install_common_tools
         - curl -sSL https://download.sourceclear.com/ci.sh | bash 
           | tee sca_results.txt
 
@@ -124,17 +99,16 @@ SAST Sandbox Test:
         - python
 
     script: 
-        - *install_common_tools
-
-        - zip project.zip setup.* LICENCE.txt -r veracode/ 
+        - zip project.zip 
+          setup.* LICENCE.txt -r $(echo ${CI_PROJECT_NAME} | cut -d'-' -f1)
         - pip3 install veracode-python
 
-        # - veracode-cli scan
-        #     --app="${CI_PROJECT_NAME}"
-        #     --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
-        #     --sandbox='Development Build'
-        #     --files='project.zip'
-        #     --timeout=30
+        - veracode-cli scan
+            --app="${CI_PROJECT_NAME}"
+            --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
+            --sandbox='Development Build'
+            --files='project.zip'
+            --timeout=30
 
     only:
         - dev
@@ -148,16 +122,14 @@ SAST Policy Test:
         - python
 
     script: 
-        - *install_common_tools
-
         - zip project.zip setup.* LICENCE.txt -r veracode/ 
         - pip3 install veracode-python
 
-        # - veracode-cli scan
-        #     --app="${CI_PROJECT_NAME}"
-        #     --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
-        #     --files='project.zip'
-        #     --timeout=30
+        - veracode-cli scan
+            --app="${CI_PROJECT_NAME}"
+            --name="$(date) - ${CI_COMMIT_SHORT_SHA}" 
+            --files='project.zip'
+            --timeout=30
 
     only:
         - master
@@ -167,12 +139,10 @@ Create Release:
     tags:
         - python
 
+    <<: *use_gitlab_repo        
     script:
-        - *install_common_tools
-
-        - *use_gitlab_repo        
-        - git pull origin master
-        - git checkout master
+        # - git pull origin master
+        # - git checkout master
         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
 
@@ -194,28 +164,27 @@ Mirror to Github: # mirror Github and use API to create release
     tags:
         - python
 
-    script:
-        - *install_common_tools
-        - git pull origin master
-        - git checkout master
+    # script:
+    #     - git pull origin master
+    #     - git checkout master
 
-        - *use_github_repo
+    <<: *use_github_repo
+    script:
         - git push -u origin master --force
         - pip3 install requests # needed for github release
         - python3 setup.py github --create-release ${GITHUB_API_TOKEN}
 
     only: 
         - master 
- 
+
 Publish to PyPi: # publish on PyPi
     stage: publish
     tags: 
         - python
 
     script:
-        - *install_common_tools
-        - git pull origin master
-        - git checkout master
+        # - git pull origin master
+        # - git checkout master
         - rm -rf dist
         - pip3 install twine
         - python3 setup.py sdist
@@ -223,4 +192,5 @@ Publish to PyPi: # publish on PyPi
 
     only: 
         - master 
+
 
