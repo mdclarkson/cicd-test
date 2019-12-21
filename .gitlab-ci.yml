@@ -157,7 +157,7 @@ Mirror to Github: # mirror Github and use API to create release
         - *use_gitlab_repo
         - git pull origin master
         - git checkout master
-        - echo "Packaging version $(python3 setup.py -d version)"
+        - echo "Packaging version $(python3 setup.py -q version)"
 
         - *use_github_repo
         - git push -u origin master --force
