@@ -51,80 +51,80 @@ stages:
 
 ############################ Branchs Dev / Master  ############################
 
-Unit Test:
-    stage: test
-
-    tags:
-        - python
-
-    script:
-        - pip3 install -e .
-        - python3 tests.py
-
-    only:
-        - dev
-        - master
-
-SCA Test: # run SCA on any branch
-    stage: test
-
-    tags:
-        - python
-
-    script:
-        - curl -sSL https://download.sourceclear.com/ci.sh | bash
-    #       | tee sca_results.txt
-    #
-    # artifacts:
-    #     paths:
-    #         - sca_results.txt
-
-    only:
-        - dev
-        - master
-
-SAST Sandbox Test: # this only runs on the dev branch, so run a Sandbox scan
-    stage: test
-
-    tags:
-        - python
-
-    script:
-        - zip project.zip
-          setup.* LICENCE.txt -r $(echo ${CI_PROJECT_NAME} | cut -d'-' -f1)
-        - pip3 install veracode-python
-
-        - veracode-cli scan
-            --app="${CI_PROJECT_NAME}"
-            --name="$(date) - ${CI_COMMIT_SHORT_SHA}"
-            --sandbox='Development Build'
-            --files='project.zip'
-            --timeout=30
-
-    only:
-        - dev
-
-############################## Master Only ####################################
-
-SAST Policy Test: # this is on master so run a SAST policy scan
-    stage: test
-
-    tags:
-        - python
-
-    script:
-        - zip project.zip
-          setup.* LICENCE.txt -r $(echo ${CI_PROJECT_NAME} | cut -d'-' -f1)
-        - pip3 install veracode-python
-
-        - veracode-cli scan
-            --app="${CI_PROJECT_NAME}"
-            --name="$(date) - ${CI_COMMIT_SHORT_SHA}"
-            --files='project.zip'
-            --timeout=30
-
-    only:
-        - master
+# Unit Test:
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script:
+#         - pip3 install -e .
+#         - python3 tests.py
+#
+#     only:
+#         - dev
+#         - master
+#
+# SCA Test: # run SCA on any branch
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script:
+#         - curl -sSL https://download.sourceclear.com/ci.sh | bash
+#     #       | tee sca_results.txt
+#     #
+#     # artifacts:
+#     #     paths:
+#     #         - sca_results.txt
+#
+#     only:
+#         - dev
+#         - master
+#
+# SAST Sandbox Test: # this only runs on the dev branch, so run a Sandbox scan
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script:
+#         - zip project.zip
+#           setup.* LICENSE.txt -r $(echo ${CI_PROJECT_NAME} | cut -d'-' -f1)
+#         - pip3 install veracode-python
+#
+#         - veracode-cli scan
+#             --app="${CI_PROJECT_NAME}"
+#             --name="$(date) - ${CI_COMMIT_SHORT_SHA}"
+#             --sandbox='Development Build'
+#             --files='project.zip'
+#             --timeout=30
+#
+#     only:
+#         - dev
+#
+# ############################## Master Only ####################################
+#
+# SAST Policy Test: # this is on master so run a SAST policy scan
+#     stage: test
+#
+#     tags:
+#         - python
+#
+#     script:
+#         - zip project.zip
+#           setup.* LICENSE.txt -r $(echo ${CI_PROJECT_NAME} | cut -d'-' -f1)
+#         - pip3 install veracode-python
+#
+#         - veracode-cli scan
+#             --app="${CI_PROJECT_NAME}"
+#             --name="$(date) - ${CI_COMMIT_SHORT_SHA}"
+#             --files='project.zip'
+#             --timeout=30
+#
+#     only:
+#         - master
 
 Create Release: # increment version and create release tag
     stage: package
@@ -137,7 +137,7 @@ Create Release: # increment version and create release tag
         - git checkout master
         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
-        - printf "Creating ${RELEASE} ${VERSION}"
+        - echo "Creating ${RELEASE} ${VERSION}"
 
         - git add -u
         - git commit -m "Release v${VERSION} [skip ci]"
@@ -157,7 +157,7 @@ Mirror to Github: # mirror Github and use API to create release
         - *use_gitlab_repo
         - git pull origin master
         - git checkout master
-        - printf "Packaging version $(python3 setup.py -d version)"
+        - echo "Packaging version $(python3 setup.py -d version)"
 
         - *use_github_repo
         - git push -u origin master --force
