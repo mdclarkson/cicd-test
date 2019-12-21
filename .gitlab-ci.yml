@@ -136,6 +136,7 @@ Create Release: # increment version and create release tag
         - git pull origin master
         - git checkout master
         - export RELEASE=$(git log -1 --pretty='format:%B' | cut -d':' -f1)
+        - echo " Release is ${RELEASE}"
         - export VERSION=$(python3 setup.py -q version --increment ${RELEASE})
         - echo "Creating ${RELEASE} ${VERSION}"
 
