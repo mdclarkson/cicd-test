@@ -114,7 +114,7 @@ class Github(setuptools.Command):
         }
         api_url = release_api_url.format(
                 repo_user, repo_name, self.create_release)
-        res = requests.post(api_url, json=json)
+        res = requests.post(api_url, json=json, timeout=60)
         print (res.status_code, res.json())
 
 
